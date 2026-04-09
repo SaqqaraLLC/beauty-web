@@ -1,31 +1,24 @@
 import Image from 'next/image';
 
-export default function LogoMark({ size = 40 }: { size?: number }) {
-  const textSize = Math.round(size * 0.22);
-  const subSize  = Math.round(size * 0.13);
+export default function LogoMark({ size = 40, showTagline = false }: { size?: number; showTagline?: boolean }) {
+  const textSize  = Math.round(size * 0.22);
+  const subSize   = Math.round(size * 0.12);
+  const tagSize   = Math.round(size * 0.10);
 
   return (
     <div className="flex items-center" style={{ gap: Math.round(size * 0.28) }}>
-      {/* Circle with actual brand SVG */}
+      {/* Logo mark */}
       <div
-        className="relative flex-shrink-0 flex items-center justify-center rounded-full"
-        style={{
-          width: size,
-          height: size,
-          border: '0.5px solid rgba(201, 168, 76, 0.3)',
-          boxShadow: '0 0 20px rgba(201,168,76,0.1), inset 0 1px 0 rgba(255,255,255,0.04)',
-          background: 'radial-gradient(circle at 40% 35%, rgba(201,168,76,0.06) 0%, transparent 70%)',
-        }}
+        className="relative flex-shrink-0 flex items-center justify-center"
+        style={{ width: size, height: size }}
       >
-        <div className="relative" style={{ width: size * 0.62, height: size * 0.62 }}>
-          <Image
-            src="/assets/assets/logo/saqqara-logo.svg"
-            alt="Saqqara"
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
+        <Image
+          src="/assets/assets/logo/saqqara-logo.svg"
+          alt="Saqqara LLC"
+          fill
+          className="object-contain"
+          priority
+        />
       </div>
 
       {/* Wordmark */}
@@ -37,11 +30,19 @@ export default function LogoMark({ size = 40 }: { size?: number }) {
           Saqqara
         </span>
         <span
-          className="font-cinzel text-saqqara-gold/35 tracking-[0.45em] uppercase"
+          className="font-cinzel text-saqqara-gold/40 tracking-[0.45em] uppercase"
           style={{ fontSize: subSize }}
         >
           LLC
         </span>
+        {showTagline && (
+          <span
+            className="script text-saqqara-gold/30 tracking-[0.05em]"
+            style={{ fontSize: tagSize + 2 }}
+          >
+            Live long carolann
+          </span>
+        )}
       </div>
     </div>
   );
