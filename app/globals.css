@@ -2,7 +2,24 @@
 
 @import "tailwindcss";
 
-/* ── CSS Custom Properties ── */
+/* ── Tailwind v4 Theme Tokens ── */
+@theme {
+  --color-saqqara-dark:      #080808;
+  --color-saqqara-card:      #0d0d0d;
+  --color-saqqara-gold:      #C9A84C;
+  --color-saqqara-gold-soft: #D4B96A;
+  --color-saqqara-rose:      #B8956A;
+  --color-saqqara-light:     #EDEDED;
+  --color-saqqara-border:    #1e1e1e;
+  --color-saqqara-mist:      rgba(201, 168, 76, 0.06);
+
+  --font-family-cinzel:     'Cinzel', serif;
+  --font-family-cormorant:  'Cormorant Garamond', Georgia, serif;
+  --font-family-script:     'Great Vibes', cursive;
+  --font-family-sans:       'Cormorant Garamond', Georgia, serif;
+}
+
+/* ── CSS Custom Properties (for inline style usage) ── */
 :root {
   --saqqara-dark:      #080808;
   --saqqara-card:      #0d0d0d;
