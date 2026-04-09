@@ -37,10 +37,14 @@ jobs:
           cp -r .next/static ./deploy/.next/static
           cp -r public ./deploy/public
           cp Web.config ./deploy/Web.config
+          # Add startup script
+          echo 'node server.js' > ./deploy/startup.sh
+
+      - name: Zip deployment package
+        run: cd deploy && zip -r ../deploy.zip .
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./deploy
+          package: ./deploy.zip
