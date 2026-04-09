@@ -123,16 +123,16 @@ export default function AgentDashboard() {
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center"
                           style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(201,168,76,0.1)' }}>
-                          {r.profileImageUrl
-                            ? <img src={r.profileImageUrl} alt={r.artistName} className="w-full h-full object-cover" />
+                          {r.artistProfileImageUrl
+                            ? <img src={r.artistProfileImageUrl} alt={r.artistName} className="w-full h-full object-cover" />
                             : <span className="text-base">🎨</span>
                           }
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-cinzel text-xs tracking-[0.08em] text-saqqara-light truncate">{r.artistName}</p>
-                          {r.specialty && <p className="text-saqqara-gold/50 text-xs truncate">{r.specialty}</p>}
+                          {r.artistSpecialty && <p className="text-saqqara-gold/50 text-xs truncate">{r.artistSpecialty}</p>}
                           <p className="text-saqqara-light/25 text-[0.6rem] font-cinzel mt-0.5">
-                            Since {new Date(r.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                            Since {new Date(r.linkedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                           </p>
                         </div>
                       </div>

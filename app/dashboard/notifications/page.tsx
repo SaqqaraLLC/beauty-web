@@ -66,13 +66,13 @@ export default function NotificationCenterPage() {
                 <button
                   key={n.notificationId}
                   type="button"
-                  onClick={() => !n.isRead && markRead(n.notificationId)}
+                  onClick={() => !n.isRead && markRead(Number(n.notificationId))}
                   className="w-full text-left card flex items-start gap-4 transition-all duration-200"
                   style={{ background: n.isRead ? undefined : 'rgba(201,168,76,0.04)' }}
                 >
                   <span className="text-xl flex-shrink-0">{EVENT_ICONS[n.eventType] ?? '🔔'}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-saqqara-light/75 text-xs leading-relaxed">{n.message}</p>
+                    <p className="text-saqqara-light/75 text-xs leading-relaxed">{n.body}</p>
                     <time className="text-saqqara-light/25 text-[0.6rem] font-cinzel mt-1 block">
                       {new Date(n.createdAt).toLocaleString('en-US', {
                         weekday: 'short', month: 'short', day: 'numeric',

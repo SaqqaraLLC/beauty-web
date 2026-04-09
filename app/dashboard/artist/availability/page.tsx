@@ -39,11 +39,7 @@ export default function AvailabilityPage() {
           setBlocks(data);
           const m: BlockMap = {};
           data.forEach(b => {
-            const start = new Date(b.startDate);
-            const stop  = new Date(b.endDate);
-            for (let d = new Date(start); d <= stop; d.setDate(d.getDate() + 1)) {
-              m[toKey(d.getFullYear(), d.getMonth(), d.getDate())] = b.isAvailable ? 'available' : 'unavailable';
-            }
+            m[b.date] = b.isAvailable ? 'available' : 'unavailable';
           });
           setMap(m);
           setDirty({});

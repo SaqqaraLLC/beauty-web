@@ -23,20 +23,8 @@ export default function ReviewCard({ review }: Props) {
       </div>
 
       {/* Body */}
-      {review.comment && (
-        <p className="text-xs text-saqqara-light/55 leading-relaxed">{review.comment}</p>
-      )}
-
-      {/* Tags */}
-      {review.tags && review.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {review.tags.map(tag => (
-            <span key={tag} className="px-2 py-0.5 rounded-full text-[0.6rem] font-cinzel tracking-[0.08em] text-saqqara-gold/60"
-              style={{ background: 'rgba(201,168,76,0.06)', border: '0.5px solid rgba(201,168,76,0.15)' }}>
-              {tag}
-            </span>
-          ))}
-        </div>
+      {review.body && (
+        <p className="text-xs text-saqqara-light/55 leading-relaxed">{review.body}</p>
       )}
     </div>
   );

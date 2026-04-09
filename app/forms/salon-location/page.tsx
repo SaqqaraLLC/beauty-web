@@ -23,6 +23,7 @@ export default function SalonLocationApplicationPage() {
     licenseType: '',
     address: '',
     city: '',
+    state: '',
     zip: '',
     phone: '',
     email: '',

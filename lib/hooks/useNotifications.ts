@@ -62,7 +62,7 @@ export function useNotifications(userId?: string) {
         method: 'POST',
         credentials: 'include',
       });
-      setNotifications(prev => prev.map(n => n.notificationId === notificationId ? { ...n, isRead: true } : n));
+      setNotifications(prev => prev.map(n => Number(n.notificationId) === notificationId ? { ...n, isRead: true } : n));
       setUnread(prev => Math.max(0, prev - 1));
     } catch { /* silent */ }
   }, []);

@@ -43,8 +43,8 @@ export default function FeaturedArtistsRow() {
             {/* Avatar */}
             <div className="w-full aspect-square rounded-xl overflow-hidden mb-3 relative"
               style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(201,168,76,0.1)' }}>
-              {slot.profileImageUrl ? (
-                <img src={slot.profileImageUrl} alt={slot.artistName}
+              {slot.artistProfileImageUrl ? (
+                <img src={slot.artistProfileImageUrl} alt={slot.artistName}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -52,23 +52,23 @@ export default function FeaturedArtistsRow() {
                 </div>
               )}
               {/* Sponsored label */}
-              {slot.label && (
+              {slot.slotType === 'Sponsored' && (
                 <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[0.55rem] font-cinzel tracking-[0.08em] text-saqqara-gold"
                   style={{ background: 'rgba(8,8,8,0.85)', border: '0.5px solid rgba(201,168,76,0.25)' }}>
-                  {slot.label}
+                  {slot.slotType}
                 </div>
               )}
             </div>
 
             {/* Info */}
             <p className="font-cinzel text-xs tracking-[0.08em] text-saqqara-light truncate">{slot.artistName}</p>
-            {slot.specialty && (
-              <p className="text-saqqara-gold/55 text-xs truncate mt-0.5">{slot.specialty}</p>
+            {slot.artistSpecialty && (
+              <p className="text-saqqara-gold/55 text-xs truncate mt-0.5">{slot.artistSpecialty}</p>
             )}
 
             <div className="flex items-center justify-between mt-2">
-              {slot.averageRating && slot.averageRating > 0 ? (
-                <StarRating value={slot.averageRating} size={10} />
+              {slot.artistRating && slot.artistRating > 0 ? (
+                <StarRating value={slot.artistRating} size={10} />
               ) : <div />}
               {slot.isVerified && <VerifiedBadge size="sm" label="✦" />}
             </div>

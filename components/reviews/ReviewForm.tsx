@@ -11,6 +11,7 @@ const AGENT_TAGS   = ['Responsive', 'Transparent', 'Negotiated Well', 'Connected
 
 const TAG_MAP: Record<ReviewableEntityType, string[]> = {
   Artist:  ARTIST_TAGS,
+  Client:  ARTIST_TAGS,
   Company: COMPANY_TAGS,
   Agent:   AGENT_TAGS,
 };

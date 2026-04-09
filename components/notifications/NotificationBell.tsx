@@ -27,7 +27,7 @@ function NotifItem({ n, onRead }: { n: NotificationPayload; onRead: (id: number)
   return (
     <button
       type="button"
-      onClick={() => !n.isRead && onRead(n.notificationId)}
+      onClick={() => !n.isRead && onRead(Number(n.notificationId))}
       className="w-full text-left px-4 py-3 transition-colors duration-150 flex items-start gap-3"
       style={{
         background: n.isRead ? 'transparent' : 'rgba(201,168,76,0.04)',
@@ -36,7 +36,7 @@ function NotifItem({ n, onRead }: { n: NotificationPayload; onRead: (id: number)
     >
       <span className="text-sm flex-shrink-0 mt-0.5">{icon}</span>
       <div className="flex-1 min-w-0">
-        <p className="text-saqqara-light/75 text-xs leading-snug">{n.message}</p>
+        <p className="text-saqqara-light/75 text-xs leading-snug">{n.body}</p>
         <time className="text-saqqara-light/25 text-[0.6rem] font-cinzel mt-0.5 block">
           {new Date(n.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
         </time>

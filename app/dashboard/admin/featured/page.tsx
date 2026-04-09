@@ -41,7 +41,7 @@ export default function AdminFeaturedPage() {
         label:     form.label || undefined,
         sortOrder: Number(form.sortOrder),
       });
-      setSlots(prev => [...prev, created].sort((a, b) => a.sortOrder - b.sortOrder));
+      setSlots(prev => [...prev, created].sort((a, b) => a.displayPosition - b.displayPosition));
       setForm({ artistId: '', label: '', sortOrder: '0' });
     } catch { /* silent */ }
     finally  { setAdding(false); }
@@ -119,19 +119,17 @@ export default function AdminFeaturedPage() {
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center"
                       style={{ background: 'rgba(201,168,76,0.06)', border: '0.5px solid rgba(201,168,76,0.15)' }}>
-                      {slot.profileImageUrl
-                        ? <img src={slot.profileImageUrl} alt={slot.artistName} className="w-full h-full object-cover" />
+                      {slot.artistProfileImageUrl
+                        ? <img src={slot.artistProfileImageUrl} alt={slot.artistName} className="w-full h-full object-cover" />
                         : <span className="text-base">🎨</span>
                       }
                     </div>
                     <div className="min-w-0">
                       <p className="font-cinzel text-xs tracking-[0.08em] text-saqqara-light truncate">{slot.artistName}</p>
-                      {slot.specialty && <p className="text-saqqara-gold/50 text-xs truncate">{slot.specialty}</p>}
-                      {slot.label && (
-                        <span className="text-[0.6rem] font-cinzel text-saqqara-gold/40">
-                          {slot.label} · #{slot.sortOrder}
-                        </span>
-                      )}
+                      {slot.artistSpecialty && <p className="text-saqqara-gold/50 text-xs truncate">{slot.artistSpecialty}</p>}
+                      <span className="text-[0.6rem] font-cinzel text-saqqara-gold/40">
+                        {slot.slotType} · #{slot.displayPosition}
+                      </span>
                     </div>
                   </div>
                   <button
