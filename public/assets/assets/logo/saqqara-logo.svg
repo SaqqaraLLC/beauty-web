@@ -1,0 +1,8 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <circle cx="200" cy="200" r="168" fill="none" stroke="#000" stroke-width="6" />
+  <text x="200" y="180" text-anchor="middle" dominant-baseline="middle" font-family="Segoe Script, cursive" font-size="70" fill="#000">saqqara</text>
+  <circle cx="184" cy="172" r="9" fill="none" stroke="#000" stroke-width="3" />
+  <circle cx="216" cy="172" r="9" fill="none" stroke="#000" stroke-width="3" />
+  <text x="200" y="235" text-anchor="middle" font-family="Segoe UI, system-ui" font-size="18" letter-spacing="3" fill="#000">BEAUTY • BUSINESS • CULTURE</text>
+</svg>

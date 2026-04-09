@@ -1,18 +1,17 @@
 import { apiGet, apiPost } from "./api";
 
-/**
- * Types (adjust later to match backend)
- */
+export type UserRole = "Artist" | "Client" | "Location" | "Admin" | "Company" | "Agent";
+
 export interface User {
   id: string;
   email: string;
-  role: "Artist" | "Client" | "Location" | "Admin";
+  role: UserRole;
   status: "Pending" | "Approved" | "Rejected";
+  artistId?: number;
+  companyId?: number;
+  agentId?: number;
 }
 
-/**
- * Auth actions
- */
 export async function login(email: string, password: string) {
   return apiPost("/auth/login", { email, password });
 }
@@ -20,7 +19,7 @@ export async function login(email: string, password: string) {
 export async function register(data: {
   email: string;
   password: string;
-  role: "Artist" | "Client" | "Location";
+  role: UserRole;
 }) {
   return apiPost("/auth/register", data);
 }
