@@ -69,3 +69,14 @@ jobs:
           app-name: 'saqqara-web'
           slot-name: 'Production'
           package: ./deploy
+
+      - name: Set Azure App Settings
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: 'saqqara-web'
+          app-settings-json: |
+            [
+              { "name": "WEBSITE_NODE_DEFAULT_VERSION", "value": "~20" },
+              { "name": "NODE_ENV", "value": "production" },
+              { "name": "NEXT_PUBLIC_API_URL", "value": "https://api.saqqarallc.com" }
+            ]
