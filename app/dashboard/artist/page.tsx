@@ -116,10 +116,11 @@ export default function ArtistDashboard() {
             <h2 className="text-xs font-cinzel tracking-[0.12em] text-saqqara-light/40 uppercase">Manage</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { href: '/dashboard/artist/bookings',          label: 'My Bookings',        sub: 'View and manage client bookings' },
-                { href: '/dashboard/artist/company-requests',  label: 'Company Requests',   sub: 'Respond to multi-artist event invitations' },
+                { href: '/dashboard/artist/bookings',          label: 'My Bookings',           sub: 'View and manage client bookings' },
+                { href: '/dashboard/artist/company-requests',  label: 'Company Requests',      sub: 'Respond to multi-artist event invitations' },
                 { href: '/dashboard/artist/agent',             label: 'Agent & Representation', sub: 'Manage your agent relationships' },
-                { href: '/dashboard/artist/availability',      label: 'Availability',        sub: 'Set your available dates and times' },
+                { href: '/dashboard/artist/availability',      label: 'Availability',           sub: 'Set your available dates and times' },
+                { href: '/dashboard/artist/stream',            label: 'Go Live',                sub: 'Broadcast to your followers in real time' },
               ].map(({ href, label, sub }) => (
                 <Link key={href} href={href}
                   className="card flex items-center justify-between group hover:border-saqqara-gold/25 transition-all duration-200">

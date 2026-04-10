@@ -1,296 +1,255 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { apiGet, apiPost } from '@/lib/api';
+import type { StreamDetail, StreamJoinResult } from '@/lib/types';
 
-interface StreamDetail {
-  streamId: number;
-  artistId: number;
-  artistName: string;
-  title: string;
-  description?: string;
-  status: string;
-  startedAt: string;
-  endedAt?: string;
-  viewCount: number;
-  isFlagged: boolean;
-  flagReason?: string;
-  flagConfidence?: number;
-  streamUrl?: string;
-  thumbnailUrl?: string;
-}
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7043';
+type ViewerPhase = 'info' | 'joining' | 'watching' | 'ended' | 'error';
 
 export default function StreamViewerPage({ params }: { params: { streamId: string } }) {
   const streamId = Number(params.streamId);
-  const [stream, setStream] = useState<StreamDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [stream,      setStream]      = useState<StreamDetail | null>(null);
+  const [loading,     setLoading]     = useState(true);
+  const [phase,       setPhase]       = useState<ViewerPhase>('info');
+  const [errorMsg,    setErrorMsg]    = useState('');
+  const [displayName, setDisplayName] = useState('');
+
+  // ACS refs
+  const callRef      = useRef<any>(null);
+  const videoAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadStream();
+    apiGet(`/api/streams/${streamId}`)
+      .then(setStream)
+      .catch(() => setPhase('error'))
+      .finally(() => setLoading(false));
   }, [streamId]);
 
-  async function loadStream() {
-    setLoading(true);
-    setError(null);
-
+  const joinStream = useCallback(async () => {
+    setPhase('joining');
+    setErrorMsg('');
     try {
-      const res = await fetch(`${API_URL}/api/artists/streams/${streamId}`);
+      const result: StreamJoinResult = await apiPost(`/api/streams/${streamId}/join`, {
+        displayName: displayName.trim() || 'Guest',
+      });
 
-      if (!res.ok) {
-        throw new Error('Stream not found');
-      }
+      // Load ACS SDK dynamically (browser-only)
+      const { CallClient, VideoStreamRenderer } =
+        await import('@azure/communication-calling');
+      const { AzureCommunicationTokenCredential } =
+        await import('@azure/communication-common');
 
-      const data = await res.json();
-      setStream(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load stream');
-    } finally {
-      setLoading(false);
+      const credential = new AzureCommunicationTokenCredential(result.acsToken);
+      const callClient = new CallClient();
+
+      const callAgent = await callClient.createCallAgent(credential, {
+        displayName: displayName.trim() || 'Guest',
+      });
+
+      const call = callAgent.join({ roomId: result.roomId }, {
+        audioOptions: { muted: true },
+        videoOptions: {},
+      });
+      callRef.current = call;
+
+      setPhase('watching');
+
+      // Subscribe to remote video streams
+      call.on('remoteParticipantsUpdated', ({ added }) => {
+        added.forEach((participant: any) => {
+          participant.on('videoStreamsUpdated', ({ added: streams }: any) => {
+            streams.forEach(async (stream: any) => {
+              if (stream.isAvailable && videoAreaRef.current) {
+                const renderer = new VideoStreamRenderer(stream);
+                const view = await renderer.createView({ scalingMode: 'Crop' });
+                // Clear and attach
+                while (videoAreaRef.current.firstChild) {
+                  videoAreaRef.current.removeChild(videoAreaRef.current.firstChild);
+                }
+                videoAreaRef.current.appendChild(view.target);
+              }
+            });
+          });
+          // Handle already-streaming participants
+          participant.videoStreams.forEach(async (stream: any) => {
+            if (stream.isAvailable && videoAreaRef.current) {
+              const renderer = new VideoStreamRenderer(stream);
+              const view = await renderer.createView({ scalingMode: 'Crop' });
+              while (videoAreaRef.current.firstChild) {
+                videoAreaRef.current.removeChild(videoAreaRef.current.firstChild);
+              }
+              videoAreaRef.current.appendChild(view.target);
+            }
+          });
+        });
+      });
+
+    } catch (err: any) {
+      setErrorMsg(err.message ?? 'Failed to join stream.');
+      setPhase('info');
     }
-  }
+  }, [streamId, displayName]);
+
+  const leaveStream = useCallback(async () => {
+    await callRef.current?.hangUp().catch(() => {});
+    setPhase('ended');
+  }, []);
 
   if (loading) {
     return (
       <>
         <Navbar />
         <div className="min-h-screen bg-saqqara-dark flex items-center justify-center">
-          <p className="text-saqqara-light/60">Loading stream...</p>
+          <p className="text-saqqara-light/30 text-xs font-cinzel tracking-[0.1em]">Loading…</p>
         </div>
       </>
     );
   }
 
-  if (error || !stream) {
+  if (phase === 'error' || !stream) {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-saqqara-dark px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="card text-center py-12">
-              <p className="text-red-400 mb-4">{error || 'Stream not found'}</p>
-              <Link href="/">
-                <button className="btn btn-primary">
-                  Back to Home
-                </button>
-              </Link>
-            </div>
+        <div className="min-h-screen bg-saqqara-dark flex items-center justify-center px-4">
+          <div className="card text-center space-y-4 max-w-sm">
+            <p className="text-saqqara-light/40 font-cinzel tracking-[0.1em] text-sm">Stream not found</p>
+            <Link href="/streams" className="btn-gold text-xs px-6 py-2 inline-block">
+              Browse Streams
+            </Link>
           </div>
         </div>
       </>
     );
   }
-
-  const isLive = stream.status === 'Active' || stream.status === 'Streaming';
-  const duration = stream.endedAt
-    ? calculateDuration(stream.startedAt, stream.endedAt)
-    : null;
 
   return (
     <>
       <Navbar />
       <div className="min-h-screen bg-saqqara-dark px-4 py-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto space-y-6">
 
-          {/* Video Player */}
-          <div className="mb-8">
-            <div className="relative bg-black rounded-lg overflow-hidden mb-4 aspect-video">
-              {stream.streamUrl ? (
-                <video
-                  ref={videoRef}
-                  src={stream.streamUrl}
-                  controls
-                  poster={stream.thumbnailUrl || undefined}
-                  className="w-full h-full"
-                />
-              ) : stream.thumbnailUrl ? (
-                <img
-                  src={stream.thumbnailUrl}
-                  alt={stream.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-6xl">📹</span>
+          {/* Video area */}
+          <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden"
+            style={{ border: '0.5px solid rgba(201,168,76,0.15)' }}>
+
+            {/* ACS video renders here */}
+            <div ref={videoAreaRef} className="w-full h-full" />
+
+            {/* Placeholder when not watching */}
+            {phase !== 'watching' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                {stream.thumbnailUrl && (
+                  <img src={stream.thumbnailUrl} alt={stream.title}
+                    className="absolute inset-0 w-full h-full object-cover opacity-20" />
+                )}
+                <div className="relative z-10 flex flex-col items-center gap-4">
+                  {stream.isLive ? (
+                    <>
+                      <span className="flex items-center gap-2 text-red-400 text-xs font-cinzel tracking-[0.15em]">
+                        <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                        LIVE NOW
+                      </span>
+                      <p className="text-saqqara-light/50 text-xs font-cormorant">
+                        {stream.viewerCount} watching
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-saqqara-light/30 text-xs font-cinzel tracking-[0.1em]">
+                      {stream.recordedAt ? 'Stream ended' : 'Not live yet'}
+                    </p>
+                  )}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Live Badge */}
-              {isLive && (
-                <div className="absolute top-4 right-4 flex items-center gap-2 bg-red-600 px-4 py-2 rounded-lg">
-                  <span className="animate-pulse w-2 h-2 bg-white rounded-full" />
-                  <span className="text-sm font-bold">LIVE</span>
-                </div>
-              )}
-
-              {/* Safety Flag Badge */}
-              {stream.isFlagged && (
-                <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-orange-600/90 px-4 py-2 rounded-lg">
-                  <span>⚠️</span>
-                  <span className="text-sm font-semibold">Content Review</span>
-                </div>
-              )}
-            </div>
-
-            {/* Duration */}
-            {duration && !isLive && (
-              <div className="text-sm text-saqqara-light/60">{duration}</div>
+            {/* Live badge while watching */}
+            {phase === 'watching' && stream.isLive && (
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+                style={{ background: 'rgba(220,38,38,0.85)', border: '0.5px solid rgba(255,255,255,0.15)' }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <span className="text-white text-[0.6rem] font-cinzel tracking-[0.1em]">LIVE</span>
+              </div>
             )}
           </div>
 
-          {/* Content */}
-          <div className="grid lg:grid-cols-3 gap-8">
+          {/* Stream info row */}
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="font-cinzel tracking-[0.08em] text-saqqara-light">{stream.title}</h1>
+              <Link href={`/artists/${stream.artistId}`}
+                className="text-saqqara-gold/70 text-xs font-cinzel tracking-[0.08em] hover:text-saqqara-gold transition-colors">
+                {stream.artistName}
+              </Link>
+              {stream.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {stream.tags.map(tag => (
+                    <span key={tag} className="px-1.5 py-0.5 rounded text-saqqara-light/30 text-[0.6rem] font-cinzel"
+                      style={{ border: '0.5px solid rgba(255,255,255,0.06)' }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            {/* Main Info */}
-            <div className="lg:col-span-2">
-
-              {/* Title & Artist */}
-              <div className="mb-6">
-                <h1 className="text-xl font-cinzel mb-1">
-                  {stream.title}
-                </h1>
-                <Link href={`/artists/${stream.artistId}`}>
-                  <p className="text-sm text-saqqara-gold hover:text-saqqara-gold/80 transition-colors">
-                    {stream.artistName}
-                  </p>
-                </Link>
-              </div>
-
-              {/* Description */}
-              {stream.description && (
-                <div className="card mb-6">
-                  <p className="text-saqqara-light/80 leading-relaxed">
-                    {stream.description}
-                  </p>
+            <div className="flex-shrink-0">
+              {phase === 'info' && stream.isLive && (
+                <div className="card space-y-3 min-w-[200px]">
+                  <p className="text-xs font-cinzel tracking-[0.08em] text-saqqara-light/50">Your display name</p>
+                  <input
+                    value={displayName}
+                    onChange={e => setDisplayName(e.target.value)}
+                    placeholder="Guest"
+                    className="w-full bg-saqqara-dark border border-saqqara-border rounded-lg px-3 py-2 text-xs font-cormorant text-saqqara-light placeholder-saqqara-light/20 focus:outline-none focus:border-saqqara-gold/40"
+                  />
+                  {errorMsg && <p className="text-red-400 text-xs">{errorMsg}</p>}
+                  <button onClick={joinStream}
+                    className="w-full py-2 rounded-full text-xs font-cinzel tracking-[0.12em] text-saqqara-dark bg-saqqara-gold hover:bg-saqqara-gold-soft transition-all">
+                    Join Stream
+                  </button>
                 </div>
               )}
 
-              {/* Safety Notice */}
-              {stream.isFlagged && (
-                <div className="card bg-orange-950/20 border border-orange-700 mb-6">
-                  <h3 className="text-lg font-semibold text-orange-400 mb-2">
-                    ⚠️ This content has been flagged for review
-                  </h3>
-                  <p className="text-saqqara-light/80 mb-3">
-                    This stream has been flagged by our automated safety systems and is under review by our moderation team. It may contain content that needs further evaluation.
-                  </p>
-                  {stream.flagReason && (
-                    <div className="mb-2">
-                      <strong className="text-orange-300">Reason:</strong> {stream.flagReason}
-                    </div>
-                  )}
-                  {stream.flagConfidence && (
-                    <div>
-                      <strong className="text-orange-300">Confidence:</strong> {Math.round(stream.flagConfidence * 100)}%
-                    </div>
-                  )}
+              {phase === 'joining' && (
+                <p className="text-saqqara-light/30 text-xs font-cinzel tracking-[0.1em]">Connecting…</p>
+              )}
+
+              {phase === 'watching' && (
+                <button onClick={leaveStream}
+                  className="px-5 py-2 rounded-full text-xs font-cinzel tracking-[0.1em] text-saqqara-light/60 transition-all"
+                  style={{ border: '0.5px solid rgba(255,255,255,0.1)' }}>
+                  Leave
+                </button>
+              )}
+
+              {phase === 'ended' && (
+                <div className="text-center space-y-2">
+                  <p className="text-saqqara-light/40 text-xs font-cinzel">You left the stream</p>
+                  <button onClick={() => setPhase('info')}
+                    className="text-saqqara-gold text-xs font-cinzel tracking-[0.08em] hover:underline">
+                    Rejoin
+                  </button>
                 </div>
               )}
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="card text-center">
-                  <div className="text-base font-bold text-saqqara-gold">
-                    {stream.viewCount.toLocaleString()}
-                  </div>
-                  <p className="text-saqqara-light/60 text-sm">Views</p>
+              {!stream.isLive && (
+                <div className="card text-center space-y-2 min-w-[180px]">
+                  <p className="text-saqqara-light/30 text-xs font-cinzel tracking-[0.08em]">
+                    {stream.recordedAt ? 'This stream has ended' : 'Stream not live yet'}
+                  </p>
+                  <Link href="/streams" className="text-saqqara-gold/60 text-xs font-cinzel hover:text-saqqara-gold transition-colors">
+                    Browse all streams →
+                  </Link>
                 </div>
-                <div className="card text-center">
-                  <div className="text-sm font-cinzel text-saqqara-gold">
-                    {new Date(stream.startedAt).toLocaleDateString()}
-                  </div>
-                  <p className="text-saqqara-light/60 text-sm">Started</p>
-                </div>
-                <div className="card text-center">
-                  <div className="text-sm font-cinzel text-saqqara-gold">
-                    {isLive ? 'LIVE' : 'Finished'}
-                  </div>
-                  <p className="text-saqqara-light/60 text-sm">Status</p>
-                </div>
-              </div>
-
+              )}
             </div>
-
-            {/* Sidebar */}
-            <div>
-
-              {/* Artist Card */}
-              <div className="card mb-6">
-                <h3 className="text-lg font-semibold mb-4">About the Artist</h3>
-                <Link href={`/artists/${stream.artistId}`}>
-                  <button className="btn btn-primary w-full">
-                    Visit Profile
-                  </button>
-                </Link>
-              </div>
-
-              {/* Share */}
-              <div className="card mb-6">
-                <h3 className="text-lg font-semibold mb-4">Share This Stream</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => copyToClipboard(window.location.href)}
-                    className="btn btn-secondary w-full text-sm"
-                  >
-                    📋 Copy Link
-                  </button>
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="card">
-                <h3 className="text-lg font-semibold mb-4">Stream Info</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <p className="text-saqqara-light/60">Started</p>
-                    <p className="text-saqqara-light">
-                      {new Date(stream.startedAt).toLocaleString()}
-                    </p>
-                  </div>
-                  {stream.endedAt && (
-                    <div>
-                      <p className="text-saqqara-light/60">Ended</p>
-                      <p className="text-saqqara-light">
-                        {new Date(stream.endedAt).toLocaleString()}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-            </div>
-
           </div>
 
         </div>
       </div>
     </>
   );
-}
-
-function calculateDuration(startTime: string, endTime: string): string {
-  const start = new Date(startTime);
-  const end = new Date(endTime);
-  const diff = Math.floor((end.getTime() - start.getTime()) / 1000);
-
-  const hours = Math.floor(diff / 3600);
-  const minutes = Math.floor((diff % 3600) / 60);
-  const seconds = diff % 60;
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m ${seconds}s`;
-  } else if (minutes > 0) {
-    return `${minutes}m ${seconds}s`;
-  } else {
-    return `${seconds}s`;
-  }
-}
-
-function copyToClipboard(text: string) {
-  navigator.clipboard.writeText(text);
-  alert('Link copied to clipboard!');
 }

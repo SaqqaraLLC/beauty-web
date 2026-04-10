@@ -46,3 +46,7 @@ export function apiPut(path: string, body?: unknown) {
   });
 }
 
+export function apiDelete(path: string) {
+  return request(path, { method: "DELETE" });
+}
+

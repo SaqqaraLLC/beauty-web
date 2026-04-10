@@ -200,6 +200,42 @@ export interface FeaturedSlot {
   endsAt: string;
 }
 
+// ─── Streams ──────────────────────────────────────────────────────────────────
+
+export interface StreamSummary {
+  streamId: number;
+  artistId: number;
+  artistName: string;
+  title: string;
+  thumbnailUrl?: string;
+  isLive: boolean;
+  viewerCount: number;
+  scheduledAt?: string;
+  recordedAt?: string;
+  tags: string[];
+}
+
+export interface StreamDetail extends StreamSummary {
+  acsRoomId?: string;
+}
+
+export interface StreamStartResult {
+  streamId: number;
+  roomId: string;
+  acsToken: string;
+  acsUserId: string;
+  acsEndpoint: string;
+}
+
+export interface StreamJoinResult {
+  streamId: number;
+  roomId: string;
+  acsToken: string;
+  acsUserId: string;
+  acsEndpoint: string;
+  title: string;
+}
+
 // ─── Availability ─────────────────────────────────────────────────────────────
 
 export interface AvailabilityBlock {
