@@ -30,9 +30,9 @@ export default function Navbar() {
     try {
       await logout();
       clearUserCache();
-      router.push('/auth/login');
+      router.push('/login');
     } catch {
-      router.push('/auth/login');
+      router.push('/login');
     }
   };
 
@@ -113,8 +113,8 @@ export default function Navbar() {
 
             {!user && !isLoading && (
               <>
-                <NavLink href="/auth/login">Sign In</NavLink>
-                <Link href="/auth/register" className="btn btn-primary">Apply</Link>
+                <NavLink href="/login">Sign In</NavLink>
+                <Link href="/register" className="btn btn-primary">Apply</Link>
               </>
             )}
           </div>
@@ -148,8 +148,8 @@ export default function Navbar() {
             )}
             {!user && !isLoading && (
               <div className="flex gap-3 pt-2">
-                <Link href="/auth/login"    className="btn btn-ghost flex-1">Sign In</Link>
-                <Link href="/auth/register" className="btn btn-primary flex-1">Apply</Link>
+                <Link href="/login"    className="btn btn-ghost flex-1">Sign In</Link>
+                <Link href="/register" className="btn btn-primary flex-1">Apply</Link>
               </div>
             )}
           </div>
