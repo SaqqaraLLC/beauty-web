@@ -35,6 +35,11 @@ jobs:
           cp -r .next/static ./deploy/.next/static
           cp -r public ./deploy/public
           cp Web.config ./deploy/Web.config
+          # iisnode passes PORT as a Windows named pipe string (\\.\pipe\...)
+          # Next.js standalone does parseInt(PORT) which returns NaN for pipes.
+          # Patch: pass PORT directly so node can listen on the named pipe.
+          sed -i 's/parseInt(process\.env\.PORT, 10) || /process.env.PORT || /g' ./deploy/server.js
+          sed -i 's/parseInt(process\.env\.PORT, 10)/process.env.PORT/g' ./deploy/server.js
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
