@@ -61,7 +61,7 @@ function StreamsDropdown() {
   const liveCount = streams.filter(s => s.isLive).length;
 
   return (
-    <div ref={ref} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(v => !v)}
         className="font-cinzel text-[0.6rem] tracking-[0.16em] uppercase transition-colors duration-300 flex items-center gap-1.5"
@@ -78,7 +78,7 @@ function StreamsDropdown() {
 
       {open && (
         <div
-          className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-72 rounded-xl overflow-hidden z-50 slide-in"
+          className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-72 rounded-xl overflow-hidden z-50 slide-in"
           style={{
             background: 'rgba(10,10,10,0.97)',
             border: '0.5px solid rgba(201,168,76,0.18)',
