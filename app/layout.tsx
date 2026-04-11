@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Image from "next/image";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,8 +35,11 @@ export default function RootLayout({
             />
           </div>
         </div>
-        <div className="relative z-10">
-          {children}
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <div className="flex-1">
+            {children}
+          </div>
+          <Footer />
         </div>
       </body>
     </html>
