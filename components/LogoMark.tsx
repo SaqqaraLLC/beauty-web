@@ -13,10 +13,12 @@ export default function LogoMark({ size = 40, showTagline = false }: { size?: nu
         style={{ width: size, height: size }}
       >
         <Image
-          src="/assets/assets/logo/saqqara-logo.svg"
+          src="/assets/assets/logo/saqqara-logo.png"
           alt="Saqqara LLC"
           fill
           className="object-contain"
+          style={{ filter: 'brightness(0.65)' }}
+          unoptimized
           priority
         />
       </div>
