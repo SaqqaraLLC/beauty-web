@@ -99,6 +99,7 @@ export default function ArtistLicensePage() {
             <p className="text-saqqara-light/40 text-xs font-cinzel tracking-[0.1em] max-w-md mx-auto">
               Saqqara helps you get licensed so you never miss an opportunity.
               We hold 20% of your service earnings toward licensing costs — no artist left behind.
+              Upon licensing, a 4-year platform commitment applies at 35% total platform fee.
             </p>
           </div>
 
@@ -111,7 +112,7 @@ export default function ArtistLicensePage() {
               {[
                 { step: '01', title: 'Opt In',    body: 'Enable license assistance on your account. 20% of your service earnings is set aside.' },
                 { step: '02', title: 'We Guide',  body: 'Saqqara coordinates enrollment in accredited programs, exam prep, and scheduling.' },
-                { step: '03', title: 'Get Licensed', body: 'Once licensed, opt out. Your earnings return to full rate and your profile gets verified.' },
+                { step: '03', title: 'Get Licensed', body: '4-year platform commitment begins at 35% fee. You work as an assistant — primary artists choose to book you at 30% of their cut.' },
               ].map(({ step, title, body }) => (
                 <div key={step} className="card space-y-2 text-center">
                   <p className="text-saqqara-gold/40 text-xs font-cinzel tracking-[0.15em]">{step}</p>
@@ -191,12 +192,16 @@ export default function ArtistLicensePage() {
                     className="w-full bg-saqqara-dark border border-saqqara-border rounded-2xl px-4 py-2.5 text-xs text-saqqara-light placeholder-saqqara-light/20 focus:outline-none focus:border-saqqara-gold/40" />
                 </div>
 
-                <div className="rounded-2xl px-4 py-3" style={{ background: 'rgba(201,168,76,0.04)', border: '0.5px solid rgba(201,168,76,0.12)' }}>
-                  <p className="text-saqqara-gold/70 text-xs font-cinzel tracking-[0.06em]">
-                    By opting in, you agree that 20% of your Saqqara service earnings will be held in a
-                    licensing fund managed by Saqqara LLC until your license is obtained. Funds are
-                    non-refundable once applied toward licensing costs.
-                  </p>
+                <div className="rounded-2xl px-4 py-3 space-y-2" style={{ background: 'rgba(201,168,76,0.04)', border: '0.5px solid rgba(201,168,76,0.12)' }}>
+                  <p className="text-saqqara-gold text-xs font-cinzel tracking-[0.08em]">Program Terms</p>
+                  <ul className="space-y-1.5 text-saqqara-gold/60 text-xs leading-relaxed">
+                    <li>· 20% of service earnings held toward licensing costs during enrollment</li>
+                    <li>· Upon licensing: 4-year minimum platform commitment</li>
+                    <li>· During 4-year commitment: 35% total platform fee (vs. standard 15%)</li>
+                    <li>· During commitment period: assistant role only — primary artists may choose to book you</li>
+                    <li>· As an assistant you earn 30% of the primary artist's service cut per booking</li>
+                    <li>· Funds applied toward licensing are non-refundable</li>
+                  </ul>
                 </div>
               </div>
             )}

@@ -123,6 +123,7 @@ export default function ArtistDashboard() {
                 { href: '/dashboard/artist/stream',            label: 'Go Live',                sub: 'Broadcast to your followers in real time' },
                 { href: '/dashboard/artist/products',          label: 'Approved Products',       sub: 'Browse Saqqara-standard products for services' },
                 { href: '/dashboard/artist/license',           label: 'License Assistance',      sub: 'Get help obtaining your professional license' },
+                { href: '/dashboard/artist/assistant',         label: 'My Assistant',            sub: 'Optionally assign an assistant to your bookings' },
               ].map(({ href, label, sub }) => (
                 <Link key={href} href={href}
                   className="card flex items-center justify-between group hover:border-saqqara-gold/25 transition-all duration-200">
