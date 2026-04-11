@@ -27,7 +27,7 @@ export default function RootLayout({
         <div className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden">
           <div className="relative w-[480px] h-[480px] opacity-[0.04]">
             <Image
-              src="/assets/assets/logo/saqqara-logo.png"
+              src="/assets/assets/logo/saqqara-logo.svg"
               alt=""
               fill
               priority
