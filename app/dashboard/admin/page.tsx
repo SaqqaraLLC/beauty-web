@@ -183,6 +183,28 @@ function OverviewTab({ campaigns, pendingUsers }: { campaigns: Campaign[], pendi
         <div className="text-xl font-bold text-saqqara-gold mb-1">{totalRecipients}</div>
         <p className="text-saqqara-light/60">Total Recipients</p>
       </div>
+
+      {/* Quick Links */}
+      <div className="md:col-span-3 space-y-3">
+        <p className="text-xs font-cinzel tracking-[0.12em] text-saqqara-light/40 uppercase">Operations</p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          {[
+            { href: '/dashboard/admin/products',           label: 'Product Standards',       sub: 'Review, approve, or decline products' },
+            { href: '/dashboard/admin/license-assistance', label: 'License Assistance',       sub: 'Track artist licensing journeys' },
+            { href: '/dashboard/admin/verification',       label: 'Verification Queue',       sub: 'Approve pending artist profiles' },
+            { href: '/dashboard/admin/featured',           label: 'Featured Slots',           sub: 'Manage $219.99/mo premium placements' },
+          ].map(({ href, label, sub }) => (
+            <a key={href} href={href}
+              className="card flex items-center justify-between hover:border-saqqara-gold/25 transition-all duration-200">
+              <div>
+                <p className="text-xs font-cinzel tracking-[0.08em] text-saqqara-light">{label}</p>
+                <p className="text-saqqara-light/30 text-xs mt-0.5">{sub}</p>
+              </div>
+              <span className="text-saqqara-light/20 text-xs">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

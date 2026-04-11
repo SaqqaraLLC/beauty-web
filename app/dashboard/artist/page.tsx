@@ -121,6 +121,8 @@ export default function ArtistDashboard() {
                 { href: '/dashboard/artist/agent',             label: 'Agent & Representation', sub: 'Manage your agent relationships' },
                 { href: '/dashboard/artist/availability',      label: 'Availability',           sub: 'Set your available dates and times' },
                 { href: '/dashboard/artist/stream',            label: 'Go Live',                sub: 'Broadcast to your followers in real time' },
+                { href: '/dashboard/artist/products',          label: 'Approved Products',       sub: 'Browse Saqqara-standard products for services' },
+                { href: '/dashboard/artist/license',           label: 'License Assistance',      sub: 'Get help obtaining your professional license' },
               ].map(({ href, label, sub }) => (
                 <Link key={href} href={href}
                   className="card flex items-center justify-between group hover:border-saqqara-gold/25 transition-all duration-200">

@@ -236,6 +236,69 @@ export interface StreamJoinResult {
   title: string;
 }
 
+// ─── Products ─────────────────────────────────────────────────────────────────
+
+export type ProductStatus = 'Pending' | 'Approved' | 'Declined';
+
+export interface Product {
+  productId: number;
+  name: string;
+  brand: string;
+  category: string;
+  description?: string;
+  imageUrl?: string;
+  sku?: string;
+  ingredients?: string;
+  vendorName?: string;
+  status: ProductStatus;
+  submittedByName?: string;
+  submittedAt: string;
+  approvedAt?: string;
+  declinedAt?: string;
+  declineReason?: string;
+  averageRating?: number;
+  reviewCount: number;
+  reviews: ProductReview[];
+}
+
+export interface ProductReview {
+  reviewId: number;
+  productId: number;
+  reviewerName: string;
+  reviewerRole: string;
+  rating: number;
+  notes?: string;
+  recommendation: 'Approve' | 'Decline' | 'Neutral';
+  createdAt: string;
+}
+
+// ─── License Assistance ───────────────────────────────────────────────────────
+
+export type LicenseStatus =
+  | 'NotStarted'
+  | 'EnrolledInSchool'
+  | 'ExamPending'
+  | 'ExamFailed'
+  | 'Licensed'
+  | 'Renewal';
+
+export interface LicenseAssistance {
+  assistanceId: number;
+  artistId: number;
+  artistName: string;
+  artistEmail: string;
+  optedIn: boolean;
+  licenseType?: string;
+  state?: string;
+  currentStatus: LicenseStatus;
+  adminNotes?: string;
+  enrollmentDeadline?: string;
+  examDate?: string;
+  licensedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ─── Availability ─────────────────────────────────────────────────────────────
 
 export interface AvailabilityBlock {
