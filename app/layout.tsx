@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -26,13 +25,10 @@ export default function RootLayout({
         {/* Global background watermark */}
         <div className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden">
           <div className="relative w-[480px] h-[480px] opacity-[0.04]">
-            <Image
+            <img
               src="/assets/assets/logo/saqqara-logo.svg"
               alt=""
-              fill
-              priority
-              unoptimized
-              className="object-contain"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           </div>
         </div>
