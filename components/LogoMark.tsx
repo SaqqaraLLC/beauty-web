@@ -32,10 +32,10 @@ export default function LogoMark({ size = 40, showTagline = false }: { size?: nu
         </span>
         {showTagline && (
           <span
-            className="script text-saqqara-gold/30 tracking-[0.05em]"
-            style={{ fontSize: tagSize + 2 }}
+            className="font-cinzel text-saqqara-gold/35 tracking-[0.28em] uppercase"
+            style={{ fontSize: tagSize }}
           >
-            Live long carolann
+            Est. 2013
           </span>
         )}
       </div>

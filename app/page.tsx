@@ -33,7 +33,7 @@ export default function Home() {
             </p>
 
             <p className="text-xs text-saqqara-light/80 mb-6 max-w-xl mx-auto text-center">
-              A modern platform for skilled artists and entrepreneurs to showcase work, connect with clients, and grow their personal brand in a luxurious digital space.
+              Founded in 2013, now digital. A modern platform for skilled artists and entrepreneurs to showcase work, connect with clients, and grow their personal brand in a luxurious digital space.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
@@ -165,16 +165,16 @@ export default function Home() {
           <div className="max-w-xs mx-auto text-center">
             <div className="grid md:grid-cols-3 gap-2">
               <div>
-                <div className="text-base font-bold text-saqqara-gold mb-1">100+</div>
-                <p className="text-saqqara-light/80 text-xs">Service Professionals</p>
+                <div className="text-base font-bold text-saqqara-gold mb-1">Est. 2013</div>
+                <p className="text-saqqara-light/80 text-xs">Over a Decade of Excellence</p>
               </div>
               <div>
-                <div className="text-base font-bold text-saqqara-gold mb-1">2000+</div>
-                <p className="text-saqqara-light/80 text-xs">Successful Bookings</p>
+                <div className="text-base font-bold text-saqqara-gold mb-1">13 Years</div>
+                <p className="text-saqqara-light/80 text-xs">Industry Experience</p>
               </div>
               <div>
-                <div className="text-base font-bold text-saqqara-gold mb-1">99.9%</div>
-                <p className="text-saqqara-light/80 text-xs">Uptime Guarantee</p>
+                <div className="text-base font-bold text-saqqara-gold mb-1">2026</div>
+                <p className="text-saqqara-light/80 text-xs">Platform Launch</p>
               </div>
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function Home() {
               </div>
             </div>
             <div className="border-t border-saqqara-border pt-2 text-center text-xs text-saqqara-light/60">
-              <p>&copy; {new Date().getFullYear()} Saqqara LLC. All rights reserved.</p>
+              <p>&copy; 2013–{new Date().getFullYear()} Saqqara LLC. All rights reserved.</p>
             </div>
           </div>
         </footer>
