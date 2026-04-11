@@ -37,7 +37,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
-              <Link href="/auth/login">
+              <Link href="/login">
                 <button className="btn btn-primary px-2 py-1 min-w-[80px]">
                   Get Started
                 </button>
@@ -198,7 +198,7 @@ export default function Home() {
           <div className="max-w-xs mx-auto text-center">
             <h2 className="text-base font-cinzel mb-2 tracking-[0.08em]">Ready to Elevate Your Brand?</h2>
             <p className="text-xs text-saqqara-light/80 mb-2 leading-relaxed">Join the Saqqara community of professional artists and service providers.</p>
-            <Link href="/auth/login">
+            <Link href="/login">
               <button className="btn btn-primary px-2 py-1 text-xs rounded-full">
                 Get Started Now
               </button>

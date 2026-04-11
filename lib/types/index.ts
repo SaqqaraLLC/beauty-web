@@ -210,6 +210,8 @@ export interface StreamSummary {
   thumbnailUrl?: string;
   isLive: boolean;
   viewerCount: number;
+  commentCount?: number;
+  giftCount?: number;
   scheduledAt?: string;
   recordedAt?: string;
   tags: string[];

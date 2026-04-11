@@ -70,12 +70,13 @@ export const ARTIST_REQUIRED_DOCS = [
 ];
 
 export const LOCATION_REQUIRED_DOCS = [
-  { type: 'BusinessLicense',    label: 'Business License',              required: true },
-  { type: 'HealthPermit',       label: 'Health Department Permit',      required: true },
-  { type: 'SalonLicense',       label: 'Salon / Establishment License', required: true },
-  { type: 'Insurance',          label: 'General Liability Insurance',   required: true },
-  { type: 'CertOfOccupancy',    label: 'Certificate of Occupancy',      required: false },
-  { type: 'FireSafety',         label: 'Fire Safety Certificate',       required: false },
-  { type: 'WorkersComp',        label: "Worker's Compensation",         required: false },
-  { type: 'Other',              label: 'Other Document',                required: false },
+  { type: 'LocationPhoto',      label: 'Current Location Photo',                required: true,  note: 'Must be a phone photo taken within the last 30 days. Phone embeds GPS coordinates and timestamp — used to verify your address and that the space is currently operational.' },
+  { type: 'BusinessLicense',    label: 'Business License',                      required: true },
+  { type: 'HealthPermit',       label: 'Health Department Permit',              required: true },
+  { type: 'SalonLicense',       label: 'Salon / Establishment License',         required: true },
+  { type: 'Insurance',          label: 'General Liability Insurance',           required: true },
+  { type: 'CertOfOccupancy',    label: 'Certificate of Occupancy',              required: false },
+  { type: 'FireSafety',         label: 'Fire Safety Certificate',               required: false },
+  { type: 'WorkersComp',        label: "Worker's Compensation",                 required: false },
+  { type: 'Other',              label: 'Other Document',                        required: false },
 ];

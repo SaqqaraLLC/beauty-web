@@ -31,7 +31,7 @@ export default function RegisterPage() {
     try {
       await register({ email, password, role });
       setSuccess(true);
-      setTimeout(() => router.push("/auth/login"), 2000);
+      setTimeout(() => router.push("/login"), 2000);
     } catch (err: any) {
       setError(err.message || "Registration failed");
     } finally {
@@ -151,7 +151,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center" style={{ borderTop: '0.5px solid rgba(255,255,255,0.05)', paddingTop: '1.25rem' }}>
             <p className="text-saqqara-light/30 text-xs">
               Already have an account?{" "}
-              <Link href="/auth/login" className="text-saqqara-gold hover:text-saqqara-gold-soft transition-colors">
+              <Link href="/login" className="text-saqqara-gold hover:text-saqqara-gold-soft transition-colors">
                 Sign in
               </Link>
             </p>

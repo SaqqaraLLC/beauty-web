@@ -39,13 +39,25 @@ export default function LoginPage() {
         return;
       }
 
-      // Verify user is approved
+      // Get user role and redirect to the right dashboard
       const meRes = await fetch(`${API_URL}/auth/me`, {
         credentials: 'include'
       });
 
       if (meRes.ok) {
-        router.push('/dashboard/admin');
+        const me = await meRes.json();
+        const role: string = (me.roles?.[0] ?? me.role ?? '').toLowerCase();
+        const dashboardMap: Record<string, string> = {
+          admin:    '/dashboard/admin',
+          staff:    '/dashboard/admin',
+          director: '/dashboard/admin',
+          artist:   '/dashboard/artist',
+          company:  '/dashboard/company',
+          agent:    '/dashboard/agent',
+          location: '/dashboard/location',
+          client:   '/artists',
+        };
+        router.push(dashboardMap[role] ?? '/');
       } else {
         setError('Could not verify user');
       }
@@ -73,7 +85,20 @@ export default function LoginPage() {
         throw new Error('Invalid MFA code');
       }
 
-      router.push('/dashboard/admin');
+      // Re-use same role-based redirect after MFA
+      const meRes = await fetch(`${API_URL}/auth/me`, { credentials: 'include' });
+      if (meRes.ok) {
+        const me = await meRes.json();
+        const role: string = (me.roles?.[0] ?? me.role ?? '').toLowerCase();
+        const dashboardMap: Record<string, string> = {
+          admin: '/dashboard/admin', staff: '/dashboard/admin', director: '/dashboard/admin',
+          artist: '/dashboard/artist', company: '/dashboard/company',
+          agent: '/dashboard/agent', location: '/dashboard/location', client: '/artists',
+        };
+        router.push(dashboardMap[role] ?? '/');
+      } else {
+        router.push('/');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'MFA verification failed');
     } finally {
@@ -161,12 +186,12 @@ export default function LoginPage() {
         <div className="mt-6 pt-6 border-t border-saqqara-border">
           <p className="text-saqqara-light/60 text-sm">
             Don't have an account?{' '}
-            <Link href="/auth/register" className="text-saqqara-gold hover:underline">
+            <Link href="/register" className="text-saqqara-gold hover:underline">
               Sign up
             </Link>
           </p>
           <p className="text-saqqara-light/60 text-sm mt-4">
-            <Link href="/auth/forgot-password" className="text-saqqara-gold hover:underline">
+            <Link href="/forgot-password" className="text-saqqara-gold hover:underline">
               Forgot your password?
             </Link>
           </p>

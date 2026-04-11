@@ -51,7 +51,7 @@ export default function CompanyRegisterPage() {
           <p className="text-saqqara-light/50 text-sm mb-6 leading-relaxed">
             Your company profile is under review. Once approved you can begin booking artists for your events and campaigns.
           </p>
-          <Link href="/auth/login" className="btn btn-primary w-full">Continue to Sign In</Link>
+          <Link href="/login" className="btn btn-primary w-full">Continue to Sign In</Link>
         </div>
       </div>
     );
@@ -128,9 +128,9 @@ export default function CompanyRegisterPage() {
           <div className="mt-6 text-center text-xs text-saqqara-light/25"
             style={{ borderTop: '0.5px solid rgba(255,255,255,0.05)', paddingTop: '1.25rem' }}>
             Already registered?{' '}
-            <Link href="/auth/login" className="text-saqqara-gold hover:text-saqqara-gold-soft transition-colors">Sign in</Link>
+            <Link href="/login" className="text-saqqara-gold hover:text-saqqara-gold-soft transition-colors">Sign in</Link>
             {' · '}
-            <Link href="/auth/register" className="text-saqqara-gold hover:text-saqqara-gold-soft transition-colors">Apply as an Artist</Link>
+            <Link href="/register" className="text-saqqara-gold hover:text-saqqara-gold-soft transition-colors">Apply as an Artist</Link>
           </div>
         </div>
       </div>
