@@ -299,6 +299,57 @@ export interface LicenseAssistance {
   updatedAt: string;
 }
 
+// ─── Document Vault ───────────────────────────────────────────────────────────
+
+export type DocumentOwnerType = 'Artist' | 'Location';
+export type DocumentStatus    = 'Pending' | 'Verified' | 'Rejected' | 'Expired';
+
+export interface ProfessionalDocument {
+  documentId:      number;
+  ownerType:       DocumentOwnerType;
+  ownerId:         number;
+  ownerName:       string;
+  documentType:    string;   // 'License' | 'Insurance' | 'HealthPermit' | 'CertOfOccupancy' | 'FireSafety' | 'CECertificate' | 'Other'
+  documentName:    string;
+  documentNumber?: string;
+  fileUrl:         string;
+  fileName:        string;
+  expiresAt?:      string;
+  uploadedAt:      string;
+  status:          DocumentStatus;
+  verifiedByAdmin?: string;
+  verifiedAt?:     string;
+  rejectionReason?: string;
+  notes?:          string;
+}
+
+// ─── CE Tracking ──────────────────────────────────────────────────────────────
+
+export interface CeCompletion {
+  ceId:          number;
+  artistId:      number;
+  artistName:    string;
+  courseName:    string;
+  provider:      string;
+  topic:         string;   // 'HIV/AIDS' | 'OSHA' | 'WorkersComp' | 'Sanitation' | 'General' | 'Other'
+  hoursCompleted: number;
+  completedAt:   string;
+  certificateUrl?: string;
+  state:         string;
+  licenseType:   string;
+  verifiedByAdmin: boolean;
+}
+
+export interface StateCeRequirement {
+  state:               string;
+  stateCode:           string;
+  licenseTypes:        string[];
+  hoursRequired:       number;
+  renewalPeriodMonths: number;
+  mandatoryTopics:     { topic: string; hours: number }[];
+  notes?:              string;
+}
+
 // ─── Availability ─────────────────────────────────────────────────────────────
 
 export interface AvailabilityBlock {
