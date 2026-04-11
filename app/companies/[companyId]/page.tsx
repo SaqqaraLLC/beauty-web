@@ -1,4 +1,6 @@
-import CompanyPageClient from './CompanyPageClient';
+import dynamic from 'next/dynamic';
+
+const CompanyPageClient = dynamic(() => import('./CompanyPageClient'), { ssr: false });
 
 export function generateStaticParams() {
   return [];

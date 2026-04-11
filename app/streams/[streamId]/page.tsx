@@ -1,4 +1,6 @@
-import StreamViewerClient from './StreamViewerClient';
+import dynamic from 'next/dynamic';
+
+const StreamViewerClient = dynamic(() => import('./StreamViewerClient'), { ssr: false });
 
 export function generateStaticParams() {
   return [];
