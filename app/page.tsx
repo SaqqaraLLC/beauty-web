@@ -42,14 +42,14 @@ export default function Home() {
                   Get Started
                 </button>
               </Link>
-              <Link href="/forms/salon-location">
+              <a href="https://outlook.office.com/book/SaqqaraLongLiveCarolann@Saqqarallc.com/" target="_blank" rel="noopener noreferrer">
                 <button className="btn btn-secondary px-2 py-1 min-w-[80px]">
-                  Salon Application
+                  Book a Call
                 </button>
-              </Link>
-              <Link href="#features">
+              </a>
+              <Link href="/forms/salon-location">
                 <button className="btn btn-ghost px-2 py-1 min-w-[80px]">
-                  Learn More
+                  Salon Application
                 </button>
               </Link>
             </div>
@@ -123,18 +123,18 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-              <div className="card border-saqqara-border bg-saqqara-dark/95 p-2">
+              <div className="card border-saqqara-gold/30 bg-saqqara-dark/95 p-2">
                 <div className="flex flex-col gap-2">
-                  <div className="text-saqqara-gold text-lg">📄</div>
-                  <h3 className="text-sm font-semibold">Need help applying?</h3>
+                  <div className="text-saqqara-gold text-lg">📞</div>
+                  <h3 className="text-sm font-semibold">Talk to Our Team</h3>
                   <p className="text-saqqara-light/70 text-xs">
-                    Our team can guide you through the salon application process and ensure your location qualifies for Saqqara partner status.
+                    Have questions about joining, licensing, or how Saqqara works? Book a free call with Kenny or Ahasan — we'll walk you through everything.
                   </p>
-                  <Link href="/forms/salon-location">
+                  <a href="https://outlook.office.com/book/SaqqaraLongLiveCarolann@Saqqarallc.com/" target="_blank" rel="noopener noreferrer">
                     <button className="btn btn-secondary px-2 py-1 text-xs w-full md:w-auto">
-                      Start the Application
+                      Book a Free Call
                     </button>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>

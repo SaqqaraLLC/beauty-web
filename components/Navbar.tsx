@@ -262,6 +262,7 @@ export default function Navbar() {
             {!user && !isLoading && (
               <>
                 <NavLink href="/login">Sign In</NavLink>
+                <a href="https://outlook.office.com/book/SaqqaraLongLiveCarolann@Saqqarallc.com/" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Book a Call</a>
                 <Link href="/register" className="btn btn-primary">Apply</Link>
               </>
             )}
