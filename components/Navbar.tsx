@@ -65,7 +65,7 @@ function StreamsDropdown() {
       <button
         onClick={() => setOpen(v => !v)}
         className="font-cinzel text-[0.6rem] tracking-[0.16em] uppercase transition-colors duration-300 flex items-center gap-1.5"
-        style={{ color: open ? '#C9A84C' : 'rgba(237,237,237,0.45)' }}
+        style={{ color: open ? '#C9A84C' : 'rgba(26,26,26,0.45)' }}
       >
         Watch
         {liveCount > 0 && (
@@ -219,14 +219,14 @@ export default function Navbar() {
     }
   })();
 
-  const mobileNavClass = "block font-cinzel text-[0.6rem] tracking-[0.16em] uppercase text-saqqara-light/45 hover:text-saqqara-gold transition-colors py-2";
+  const mobileNavClass = "block font-cinzel text-[0.6rem] tracking-[0.16em] uppercase text-saqqara-light/60 hover:text-saqqara-gold transition-colors py-2";
 
   return (
     <nav
       className="sticky top-0 z-50 backdrop-blur-2xl"
       style={{
-        background: 'rgba(8, 8, 8, 0.9)',
-        borderBottom: '0.5px solid rgba(201, 168, 76, 0.1)',
+        background: 'rgba(255, 255, 255, 0.92)',
+        borderBottom: '0.5px solid rgba(201, 168, 76, 0.25)',
       }}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
@@ -270,7 +270,7 @@ export default function Navbar() {
           {/* Mobile toggle */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-saqqara-light/40 hover:text-saqqara-gold transition-colors"
+            className="md:hidden text-saqqara-light/60 hover:text-saqqara-gold transition-colors"
             aria-label="Toggle menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
