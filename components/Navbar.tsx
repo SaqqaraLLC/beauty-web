@@ -104,7 +104,7 @@ function StreamsDropdown() {
           {/* Stream list */}
           {streams.length === 0 ? (
             <div className="px-4 py-8 text-center">
-              <p className="text-saqqara-light/25 text-[0.65rem] font-cinzel tracking-[0.08em]">No broadcasts right now</p>
+              <p className="text-[0.65rem] font-cinzel tracking-[0.08em]" style={{ color: 'rgba(255,255,255,0.25)' }}>No broadcasts right now</p>
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
@@ -133,12 +133,12 @@ function StreamsDropdown() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-cinzel text-[0.65rem] tracking-[0.06em] text-saqqara-light group-hover:text-saqqara-gold transition-colors truncate">
+                    <p className="font-cinzel text-[0.65rem] tracking-[0.06em] group-hover:text-saqqara-gold transition-colors truncate" style={{ color: 'rgba(255,255,255,0.85)' }}>
                       {s.title}
                     </p>
                     <p className="text-saqqara-gold/45 text-[0.6rem] truncate mt-0.5">{s.artistName}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-saqqara-light/20 text-[0.55rem]">
+                      <span className="text-[0.55rem]" style={{ color: 'rgba(255,255,255,0.2)' }}>
                         {s.viewerCount.toLocaleString()} {s.isLive ? 'watching' : 'views'}
                       </span>
                       {(s.giftCount ?? 0) > 0 && (
