@@ -19,7 +19,9 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#0A0A0A" />
+        <meta name="theme-color" content="#FFFFFF" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.svg" />
       </head>
       <body className="bg-saqqara-dark text-saqqara-light">
         {/* Global background watermark */}

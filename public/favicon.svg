@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64">
+  <!-- White circular background -->
+  <circle cx="32" cy="32" r="32" fill="white"/>
+  <!-- Gold ring border -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#C9A84C" stroke-width="1"/>
+  <!-- Logo centered, gold tinted via feColorMatrix -->
+  <defs>
+    <filter id="gold">
+      <feColorMatrix type="matrix"
+        values="0.5 0.3 0   0 0.35
+                0.3 0.2 0   0 0.22
+                0   0   0   0 0.04
+                0   0   0   1 0"/>
+    </filter>
+  </defs>
+  <image href="/assets/assets/logo/saqqara-logo.svg" x="10" y="10" width="44" height="44" filter="url(#gold)"/>
+</svg>
