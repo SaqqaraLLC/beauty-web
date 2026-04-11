@@ -24,11 +24,16 @@ export default function RootLayout({
       <body className="bg-saqqara-dark text-saqqara-light">
         {/* Global background watermark */}
         <div className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden">
-          <div className="relative w-[480px] h-[480px] opacity-[0.04]">
+          <div className="relative w-[480px] h-[480px] opacity-[0.08]">
             <img
               src="/assets/assets/logo/saqqara-logo.svg"
               alt=""
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                mixBlendMode: 'screen',
+              }}
             />
           </div>
         </div>
