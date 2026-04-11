@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const ArtistPageClient = dynamic(() => import('./ArtistPageClient'), { ssr: false });
+const ArtistPageClient = dynamic(() => import('./ArtistPageClient'));
 
 export function generateStaticParams() {
   return [];

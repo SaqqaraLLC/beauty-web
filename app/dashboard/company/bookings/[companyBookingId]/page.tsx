@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const BookingDetailClient = dynamic(() => import('./BookingDetailClient'), { ssr: false });
+const BookingDetailClient = dynamic(() => import('./BookingDetailClient'));
 
 export function generateStaticParams() {
   return [];
