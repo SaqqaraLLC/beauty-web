@@ -4,14 +4,14 @@
 
 /* ── Tailwind v4 Theme Tokens ── */
 @theme {
-  --color-saqqara-dark:      #080808;
-  --color-saqqara-card:      #0d0d0d;
+  --color-saqqara-dark:      #FFFFFF;
+  --color-saqqara-card:      #F9F6F0;
   --color-saqqara-gold:      #C9A84C;
   --color-saqqara-gold-soft: #D4B96A;
   --color-saqqara-rose:      #B8956A;
-  --color-saqqara-light:     #EDEDED;
-  --color-saqqara-border:    #1e1e1e;
-  --color-saqqara-mist:      rgba(201, 168, 76, 0.06);
+  --color-saqqara-light:     #1A1A1A;
+  --color-saqqara-border:    #E8E0D0;
+  --color-saqqara-mist:      rgba(201, 168, 76, 0.08);
 
   --font-family-cinzel:     'Cinzel', serif;
   --font-family-cormorant:  'Cormorant Garamond', Georgia, serif;
@@ -21,13 +21,13 @@
 
 /* ── CSS Custom Properties (for inline style usage) ── */
 :root {
-  --saqqara-dark:      #080808;
-  --saqqara-card:      #0d0d0d;
+  --saqqara-dark:      #FFFFFF;
+  --saqqara-card:      #F9F6F0;
   --saqqara-gold:      #C9A84C;
   --saqqara-gold-soft: #D4B96A;
   --saqqara-rose:      #B8956A;
-  --saqqara-light:     #EDEDED;
-  --saqqara-border:    #1e1e1e;
+  --saqqara-light:     #1A1A1A;
+  --saqqara-border:    #E8E0D0;
 }
 
 /* ── Base ── */
@@ -39,6 +39,7 @@ html, body {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-feature-settings: "kern";
   font-size: 0.6rem;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -95,13 +96,13 @@ body {
 
 .btn-ghost {
   background-color: transparent;
-  color: rgba(237, 237, 237, 0.55);
-  border: 0.5px solid rgba(237, 237, 237, 0.12);
+  color: rgba(26, 26, 26, 0.55);
+  border: 0.5px solid rgba(26, 26, 26, 0.18);
 }
 
 .btn-ghost:hover {
-  border-color: rgba(237, 237, 237, 0.28);
-  color: var(--saqqara-light);
+  border-color: rgba(26, 26, 26, 0.38);
+  color: #1A1A1A;
 }
 
 .btn-danger {
@@ -119,28 +120,27 @@ body {
   background-color: var(--saqqara-card);
   border-radius: 1.5rem;
   padding: 1.5rem;
-  border: 0.5px solid rgba(201, 168, 76, 0.12);
+  border: 0.5px solid rgba(201, 168, 76, 0.25);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transition: all 0.35s ease;
 }
 
 .card:hover {
-  border-color: rgba(201, 168, 76, 0.28);
+  border-color: rgba(201, 168, 76, 0.5);
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.55),
-    0 0 40px rgba(201, 168, 76, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 12px 40px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(201, 168, 76, 0.08);
   transform: translateY(-2px);
 }
 
 /* ── Form Elements ── */
 input, textarea, select {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.025);
-  color: var(--saqqara-light);
-  border: 0.5px solid rgba(201, 168, 76, 0.18);
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+  border: 0.5px solid rgba(201, 168, 76, 0.35);
   border-radius: 9999px;
   padding: 0.6rem 1.1rem;
   font-family: 'Cormorant Garamond', serif;
@@ -163,7 +163,7 @@ input:focus, textarea:focus, select:focus {
 label {
   display: block;
   margin-bottom: 0.45rem;
-  color: rgba(237, 237, 237, 0.45);
+  color: rgba(26, 26, 26, 0.55);
   font-size: 0.6rem;
   font-weight: 400;
   letter-spacing: 0.16em;
