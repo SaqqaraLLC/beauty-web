@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const AgentPageClient = dynamic(() => import('./AgentPageClient'));
+import AgentPageClient from './AgentPageClient';
 
 export function generateStaticParams() {
   return [];

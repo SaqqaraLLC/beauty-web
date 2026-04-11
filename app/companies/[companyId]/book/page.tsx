@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const BookArtistsClient = dynamic(() => import('./BookArtistsClient'));
+import BookArtistsClient from './BookArtistsClient';
 
 export function generateStaticParams() {
   return [];
