@@ -1,4 +1,4 @@
-export default function LogoMark({ size = 40, showTagline = false }: { size?: number; showTagline?: boolean }) {
+export default function LogoMark({ size = 40, showTagline = false, glow = false }: { size?: number; showTagline?: boolean; glow?: boolean }) {
   const subSize = Math.round(size * 0.18);
   const tagSize = Math.round(size * 0.13);
 
@@ -10,9 +10,12 @@ export default function LogoMark({ size = 40, showTagline = false }: { size?: nu
         alt="Saqqara LLC"
         width={size}
         height={size}
+        className={glow ? 'animate-logo-float' : ''}
         style={{
           objectFit: 'contain',
-          filter: 'sepia(1) saturate(4) hue-rotate(5deg) brightness(0.88)',
+          filter: glow
+            ? 'sepia(1) saturate(4) hue-rotate(5deg) brightness(0.88) drop-shadow(0 0 18px rgba(201,168,76,0.55)) drop-shadow(0 0 40px rgba(201,168,76,0.25))'
+            : 'sepia(1) saturate(4) hue-rotate(5deg) brightness(0.88)',
         }}
       />
 

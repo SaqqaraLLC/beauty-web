@@ -16,7 +16,7 @@ export default function Home() {
 
           <div className="relative z-10 px-4 max-w-3xl mx-auto text-center flex flex-col items-center">
             <div className="mb-6 flex justify-center">
-              <LogoMark size={90} showTagline={false} />
+              <LogoMark size={90} showTagline={false} glow={true} />
             </div>
             <h1 className="text-base md:text-lg lg:text-xl font-cinzel font-black tracking-[0.08em] text-saqqara-gold drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)] text-center">
               SAQQARA
