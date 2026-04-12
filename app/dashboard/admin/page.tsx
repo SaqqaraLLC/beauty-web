@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { apiPost } from '@/lib/api';
 
 interface Campaign {
   campaignId: number;
@@ -31,6 +32,9 @@ export default function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'broadcasts' | 'users' | 'moderation'>('overview');
   const [showNewCampaign, setShowNewCampaign] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [rejectModal, setRejectModal] = useState<{ id: string; email: string } | null>(null);
+  const [rejectReason, setRejectReason] = useState('');
 
   useEffect(() => {
     loadData();
@@ -68,17 +72,31 @@ export default function AdminDashboard() {
   }
 
   async function approveUser(userId: string) {
+    setActionLoading(userId);
+    setError(null);
     try {
-      const res = await fetch(`${API_URL}/admin/approve/${userId}`, {
-        method: 'POST',
-        credentials: 'include'
-      });
-
-      if (res.ok) {
-        setPendingUsers(pendingUsers.filter(u => u.id !== userId));
-      }
+      await apiPost(`/admin/approve/${userId}`);
+      setPendingUsers(prev => prev.filter(u => u.id !== userId));
     } catch (err) {
-      setError('Failed to approve user');
+      setError(err instanceof Error ? err.message : 'Failed to approve user');
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function rejectUser() {
+    if (!rejectModal) return;
+    setActionLoading(rejectModal.id);
+    setError(null);
+    try {
+      await apiPost(`/admin/reject/${rejectModal.id}`, { reason: rejectReason });
+      setPendingUsers(prev => prev.filter(u => u.id !== rejectModal.id));
+      setRejectModal(null);
+      setRejectReason('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reject user');
+    } finally {
+      setActionLoading(null);
     }
   }
 
@@ -142,15 +160,58 @@ export default function AdminDashboard() {
               statusBadge={getStatusBadge}
             />
           ) : activeTab === 'users' ? (
-            <UsersTab 
-              pendingUsers={pendingUsers} 
+            <UsersTab
+              pendingUsers={pendingUsers}
+              actionLoading={actionLoading}
               onApprove={approveUser}
+              onReject={(id, email) => { setRejectModal({ id, email }); setRejectReason(''); }}
             />
           ) : (
             <ModerationTab />
           )}
         </div>
       </div>
+
+      {/* Reject User Modal */}
+      {rejectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          style={{ background: 'rgba(0,0,0,0.85)' }}>
+          <div className="w-full max-w-md rounded-2xl p-6 space-y-5"
+            style={{ background: '#0c0c0c', border: '0.5px solid rgba(239,68,68,0.2)' }}>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-cinzel tracking-[0.1em] text-red-400">Reject Application</h2>
+              <button onClick={() => { setRejectModal(null); setRejectReason(''); }}
+                className="text-saqqara-light/30 hover:text-saqqara-light text-lg leading-none">×</button>
+            </div>
+            <p className="text-xs text-saqqara-light/50">{rejectModal.email}</p>
+            <div>
+              <label className="block text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 uppercase mb-1.5">Rejection Reason</label>
+              <textarea
+                value={rejectReason}
+                onChange={e => setRejectReason(e.target.value)}
+                rows={3}
+                className="w-full bg-black/40 text-saqqara-light text-xs px-3 py-2 rounded-lg outline-none resize-none"
+                style={{ border: '0.5px solid rgba(201,168,76,0.2)' }}
+                placeholder="e.g. Incomplete application, missing documents…"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => { setRejectModal(null); setRejectReason(''); }}
+                className="flex-1 px-4 py-2 text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 rounded-full hover:text-saqqara-light transition-colors"
+                style={{ border: '0.5px solid rgba(255,255,255,0.08)' }}>
+                Cancel
+              </button>
+              <button
+                onClick={rejectUser}
+                disabled={!rejectReason.trim() || actionLoading === rejectModal.id}
+                className="flex-1 px-4 py-2 text-xs font-cinzel tracking-[0.08em] text-red-400 rounded-full transition-colors hover:bg-red-400/10 disabled:opacity-40"
+                style={{ border: '0.5px solid rgba(239,68,68,0.3)' }}>
+                {actionLoading === rejectModal.id ? '…' : 'Confirm Reject'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -271,12 +332,16 @@ function BroadcastsTab({
 }
 
 // Users Tab Component
-function UsersTab({ 
-  pendingUsers, 
-  onApprove 
-}: { 
-  pendingUsers: PendingUser[], 
-  onApprove: (id: string) => void
+function UsersTab({
+  pendingUsers,
+  actionLoading,
+  onApprove,
+  onReject,
+}: {
+  pendingUsers: PendingUser[];
+  actionLoading: string | null;
+  onApprove: (id: string) => void;
+  onReject: (id: string, email: string) => void;
 }) {
   return (
     <div className="space-y-8">
@@ -294,12 +359,23 @@ function UsersTab({
                 <p className="font-semibold">{user.email}</p>
                 <p className="text-saqqara-light/60 text-sm">Role: {user.role || 'Not assigned'}</p>
               </div>
-              <button
-                onClick={() => onApprove(user.id)}
-                className="btn btn-primary text-sm"
-              >
-                Approve
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onApprove(user.id)}
+                  disabled={actionLoading === user.id}
+                  className="btn btn-primary text-sm disabled:opacity-40"
+                >
+                  {actionLoading === user.id ? '…' : 'Approve'}
+                </button>
+                <button
+                  onClick={() => onReject(user.id, user.email)}
+                  disabled={actionLoading === user.id}
+                  className="px-4 py-2 text-xs font-cinzel tracking-[0.08em] text-red-400/70 hover:text-red-400 rounded-full transition-colors disabled:opacity-40"
+                  style={{ border: '0.5px solid rgba(239,68,68,0.25)' }}
+                >
+                  Reject
+                </button>
+              </div>
             </div>
           ))}
         </div>
