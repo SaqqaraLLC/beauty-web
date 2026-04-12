@@ -20,6 +20,7 @@ interface UploadForm {
   documentName: string;
   documentNumber: string;
   expiresAt: string;
+  file: File | null;
 }
 
 function daysUntil(dateStr: string): number {
@@ -58,6 +59,7 @@ export default function ArtistDocumentsPage() {
     documentName: '',
     documentNumber: '',
     expiresAt: '',
+    file: null,
   });
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function ArtistDocumentsPage() {
   }, []);
 
   function openModal(type: string) {
-    setForm({ documentType: type, documentName: '', documentNumber: '', expiresAt: '' });
+    setForm({ documentType: type, documentName: '', documentNumber: '', expiresAt: '', file: null });
     setShowModal(true);
   }
 
@@ -76,13 +78,22 @@ export default function ArtistDocumentsPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const newDoc = await apiPost('/api/documents', {
-        ownerType: 'Artist',
-        documentType: form.documentType,
-        documentName: form.documentName,
-        documentNumber: form.documentNumber || undefined,
-        expiresAt: form.expiresAt || undefined,
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7043';
+      const fd = new FormData();
+      fd.append('ownerType', 'Artist');
+      fd.append('documentType', form.documentType);
+      fd.append('documentName', form.documentName);
+      if (form.documentNumber) fd.append('documentNumber', form.documentNumber);
+      if (form.expiresAt) fd.append('expiresAt', form.expiresAt);
+      if (form.file) fd.append('file', form.file);
+
+      const res = await fetch(`${API_URL}/api/documents/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: fd,
       });
+      if (!res.ok) throw new Error('Upload failed');
+      const newDoc = await res.json();
       setDocs(prev => [newDoc, ...prev]);
       setShowModal(false);
     } catch {
@@ -272,12 +283,24 @@ export default function ArtistDocumentsPage() {
                 />
               </div>
 
-              {/* File Note */}
-              <div className="rounded-lg px-4 py-3 text-center"
-                style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.05)' }}>
-                <p className="text-xs text-saqqara-light/30 font-cinzel tracking-[0.06em]">
-                  Secure file storage launching soon
-                </p>
+              {/* File Upload */}
+              <div>
+                <label className="block text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 uppercase mb-1.5">
+                  Upload File <span className="normal-case text-saqqara-light/20">(JPG, PNG, PDF — max 10 MB)</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer px-3 py-2.5 rounded-lg transition-colors hover:bg-white/5"
+                  style={{ border: '0.5px solid rgba(201,168,76,0.2)', background: 'rgba(0,0,0,0.3)' }}>
+                  <span className="text-saqqara-gold text-sm">↑</span>
+                  <span className="text-xs text-saqqara-light/50 truncate">
+                    {form.file ? form.file.name : 'Choose file…'}
+                  </span>
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.pdf,.heic"
+                    className="hidden"
+                    onChange={e => setForm(f => ({ ...f, file: e.target.files?.[0] ?? null }))}
+                  />
+                </label>
               </div>
 
               <div className="flex gap-3 pt-1">

@@ -14,6 +14,7 @@ interface AdminDocument {
   expiresAt?: string;
   status: 'Pending' | 'Verified' | 'Rejected';
   rejectionReason?: string;
+  hasFile?: boolean;
   createdAt: string;
 }
 
@@ -211,23 +212,40 @@ export default function AdminDocumentsPage() {
                     </div>
 
                     {/* Actions */}
-                    {doc.status === 'Pending' && (
-                      <div className="flex gap-2 shrink-0">
+                    <div className="flex flex-wrap gap-2 shrink-0">
+                      {doc.hasFile && (
                         <button
-                          onClick={() => handleVerify(doc.id)}
-                          disabled={actionLoading === doc.id}
-                          className="btn btn-primary text-xs px-4 py-1.5">
-                          {actionLoading === doc.id ? '…' : 'Verify'}
+                          onClick={async () => {
+                            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7043';
+                            const res = await fetch(`${API_URL}/admin/documents/${doc.id}/view`, { credentials: 'include' });
+                            if (res.ok) {
+                              const { url } = await res.json();
+                              window.open(url, '_blank');
+                            }
+                          }}
+                          className="px-4 py-1.5 text-xs font-cinzel tracking-[0.08em] text-saqqara-gold/70 hover:text-saqqara-gold rounded-full transition-colors"
+                          style={{ border: '0.5px solid rgba(201,168,76,0.25)' }}>
+                          View File
                         </button>
-                        <button
-                          onClick={() => setRejectModal({ id: doc.id, name: doc.documentName })}
-                          disabled={actionLoading === doc.id}
-                          className="px-4 py-1.5 text-xs font-cinzel tracking-[0.08em] text-red-400/70 hover:text-red-400 rounded-full transition-colors"
-                          style={{ border: '0.5px solid rgba(239,68,68,0.25)' }}>
-                          Reject
-                        </button>
-                      </div>
-                    )}
+                      )}
+                      {doc.status === 'Pending' && (
+                        <>
+                          <button
+                            onClick={() => handleVerify(doc.id)}
+                            disabled={actionLoading === doc.id}
+                            className="btn btn-primary text-xs px-4 py-1.5">
+                            {actionLoading === doc.id ? '…' : 'Verify'}
+                          </button>
+                          <button
+                            onClick={() => setRejectModal({ id: doc.id, name: doc.documentName })}
+                            disabled={actionLoading === doc.id}
+                            className="px-4 py-1.5 text-xs font-cinzel tracking-[0.08em] text-red-400/70 hover:text-red-400 rounded-full transition-colors"
+                            style={{ border: '0.5px solid rgba(239,68,68,0.25)' }}>
+                            Reject
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
