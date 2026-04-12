@@ -62,6 +62,7 @@ export function getCeRequirement(stateCode: string, licenseType?: string): State
 
 // Document types required by owner type
 export const ARTIST_REQUIRED_DOCS = [
+  { type: 'GovernmentID',   label: 'Government-Issued Photo ID',            required: true },
   { type: 'License',        label: 'State Cosmetology / Esthetics License', required: true },
   { type: 'Insurance',      label: 'Liability Insurance',                   required: true },
   { type: 'CECertificate',  label: 'CE Completion Certificate',             required: false },
