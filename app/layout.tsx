@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Footer from "@/components/Footer";
+import InactivityGuard from "@/components/InactivityGuard";
+import ReminderBanner from "@/components/ReminderBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,11 +43,13 @@ export default function RootLayout({
           </div>
         </div>
         <div className="relative z-10 flex flex-col min-h-screen">
+          <ReminderBanner />
           <div className="flex-1">
             {children}
           </div>
           <Footer />
         </div>
+        <InactivityGuard />
       </body>
     </html>
   );
