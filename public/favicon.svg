@@ -1,10 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64">
-  <!-- White circular background -->
-  <circle cx="32" cy="32" r="32" fill="white"/>
-  <!-- Gold ring border -->
-  <circle cx="32" cy="32" r="30" fill="none" stroke="#C9A84C" stroke-width="1"/>
-  <!-- Logo centered, gold tinted via feColorMatrix -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
+    <clipPath id="c">
+      <circle cx="32" cy="32" r="31"/>
+    </clipPath>
     <filter id="gold">
       <feColorMatrix type="matrix"
         values="0.5 0.3 0   0 0.35
@@ -13,5 +11,12 @@
                 0   0   0   1 0"/>
     </filter>
   </defs>
-  <image href="/assets/assets/logo/saqqara-logo.svg" x="2" y="2" width="60" height="60" filter="url(#gold)"/>
+  <!-- White background -->
+  <circle cx="32" cy="32" r="32" fill="white"/>
+  <!-- PNG cropped to show just the QQ, clipped to circle -->
+  <image href="/assets/assets/logo/Tab-Logo.png"
+    x="-78" y="-66" width="401" height="401"
+    clip-path="url(#c)" filter="url(#gold)"/>
+  <!-- Gold ring border -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#C9A84C" stroke-width="1"/>
 </svg>
