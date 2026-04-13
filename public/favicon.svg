@@ -13,5 +13,5 @@
                 0   0   0   1 0"/>
     </filter>
   </defs>
-  <image href="/assets/assets/logo/saqqara-logo.svg" x="10" y="10" width="44" height="44" filter="url(#gold)"/>
+  <image href="/assets/assets/logo/saqqara-logo.svg" x="2" y="2" width="60" height="60" filter="url(#gold)"/>
 </svg>
