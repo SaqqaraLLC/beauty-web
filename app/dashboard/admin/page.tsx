@@ -254,6 +254,8 @@ function OverviewTab({ campaigns, pendingUsers }: { campaigns: Campaign[], pendi
             { href: '/dashboard/admin/license-assistance', label: 'License Assistance',       sub: 'Track artist licensing journeys' },
             { href: '/dashboard/admin/verification',       label: 'Verification Queue',       sub: 'Approve pending artist profiles' },
             { href: '/dashboard/admin/featured',           label: 'Featured Slots',           sub: 'Manage $219.99/mo premium placements' },
+            { href: '/dashboard/admin/reviews',            label: 'Review Moderation',        sub: 'Publish or remove platform reviews' },
+            { href: '/dashboard/admin/documents',          label: 'Document Verification',    sub: 'Verify compliance documents' },
           ].map(({ href, label, sub }) => (
             <a key={href} href={href}
               className="card flex items-center justify-between hover:border-saqqara-gold/25 transition-all duration-200">

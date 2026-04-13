@@ -252,7 +252,11 @@ export interface Product {
   sku?: string;
   ingredients?: string;
   vendorName?: string;
+  wholesalePriceCents: number;   // what Saqqara pays %PURE
+  billedPriceCents: number;      // wholesale × 1.8 (standard, billed to client)
+  promoBilledPriceCents: number; // wholesale × 1.6 (with promo code)
   status: ProductStatus;
+  isActive: boolean;
   submittedByName?: string;
   submittedAt: string;
   approvedAt?: string;

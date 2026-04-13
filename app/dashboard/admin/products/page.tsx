@@ -31,6 +31,7 @@ export default function AdminProductsPage() {
   const [newProduct,  setNewProduct]  = useState({
     name: '', brand: '', category: 'Skincare', description: '',
     ingredients: '', vendorName: '%PURE', sku: '',
+    wholesalePriceCents: 0,
   });
 
   useEffect(() => {
@@ -74,7 +75,7 @@ export default function AdminProductsPage() {
     try {
       await apiPost('/api/products', newProduct);
       setShowAdd(false);
-      setNewProduct({ name: '', brand: '', category: 'Skincare', description: '', ingredients: '', vendorName: '%PURE', sku: '' });
+      setNewProduct({ name: '', brand: '', category: 'Skincare', description: '', ingredients: '', vendorName: '%PURE', sku: '', wholesalePriceCents: 0 });
       await load();
     } catch { /* silent */ }
     finally { setSubmitting(false); }
@@ -181,6 +182,14 @@ export default function AdminProductsPage() {
                         <p className="text-saqqara-light/25 text-xs">{product.vendorName}</p>
                       )}
                     </div>
+                    {product.wholesalePriceCents > 0 && (
+                      <div className="text-right flex-shrink-0 space-y-0.5">
+                        <p className="text-saqqara-light/40 text-[0.6rem] font-cinzel">Wholesale</p>
+                        <p className="text-saqqara-light/50 text-xs font-cinzel">${(product.wholesalePriceCents / 100).toFixed(2)}</p>
+                        <p className="text-saqqara-gold text-xs font-cinzel">→ ${(product.billedPriceCents / 100).toFixed(2)}</p>
+                        <p className="text-saqqara-light/30 text-[0.6rem] font-cinzel">Promo: ${(product.promoBilledPriceCents / 100).toFixed(2)}</p>
+                      </div>
+                    )}
                     {product.averageRating && product.averageRating > 0 && (
                       <div className="text-center flex-shrink-0">
                         <p className="text-saqqara-gold text-sm font-cinzel">{product.averageRating.toFixed(1)}</p>
@@ -339,6 +348,20 @@ export default function AdminProductsPage() {
                 <label className="block text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 mb-1">SKU</label>
                 <input value={newProduct.sku} onChange={e => setNewProduct(p => ({ ...p, sku: e.target.value }))}
                   placeholder="Optional" className="w-full bg-saqqara-dark border border-saqqara-border rounded-2xl px-4 py-2 text-xs text-saqqara-light placeholder-saqqara-light/20 focus:outline-none focus:border-saqqara-gold/30" />
+              </div>
+              <div>
+                <label className="block text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 mb-1">Wholesale Price (¢)</label>
+                <input
+                  type="number" min={0}
+                  value={newProduct.wholesalePriceCents}
+                  onChange={e => setNewProduct(p => ({ ...p, wholesalePriceCents: parseInt(e.target.value) || 0 }))}
+                  placeholder="e.g. 2500 = $25.00"
+                  className="w-full bg-saqqara-dark border border-saqqara-border rounded-2xl px-4 py-2 text-xs text-saqqara-light placeholder-saqqara-light/20 focus:outline-none focus:border-saqqara-gold/30" />
+                {newProduct.wholesalePriceCents > 0 && (
+                  <p className="text-saqqara-gold/50 text-xs mt-1 font-cinzel">
+                    Standard: ${((newProduct.wholesalePriceCents * 1.8) / 100).toFixed(2)} · Promo: ${((newProduct.wholesalePriceCents * 1.6) / 100).toFixed(2)}
+                  </p>
+                )}
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 mb-1">Description</label>
