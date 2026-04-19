@@ -62,20 +62,76 @@ export interface CompanyBooking {
 }
 
 export interface CompanyInvoiceLineItem {
+  id: number;
   description: string;
-  artistName?: string;
-  amountCents: number;
+  quantity: number;
+  unitPriceCents: number;
+  discountPercent?: number;
+  totalCents: number;
 }
 
+export type InvoiceStatus = 'Draft' | 'Sent' | 'Paid' | 'Overdue' | 'Void';
+
 export interface CompanyInvoice {
-  invoiceId: number;
-  companyBookingId: number;
+  id: number;
+  invoiceNumber: string;
+  status: InvoiceStatus;
   issuedAt: string;
-  dueDate: string;
-  totalCents: number;
+  dueAt: string;
   paidAt?: string;
   pdfUrl?: string;
-  lineItems: CompanyInvoiceLineItem[];
+  companyBookingId?: number;
+  company?: { companyName: string; email: string };
+  totalCents: number;
+  lineItems?: CompanyInvoiceLineItem[];
+}
+
+export interface WpPayment {
+  paymentId: number;
+  worldpayTransactionId: string;
+  bookingId?: number;
+  amountCents: number;
+  currencyCode: string;
+  status: 'Pending' | 'Authorized' | 'Captured' | 'Declined' | 'Refunded' | 'Failed' | 'Expired';
+  createdAt: string;
+  completedAt?: string;
+  cardLast4?: string;
+  cardBrand?: string;
+}
+
+// ─── Payouts ──────────────────────────────────────────────────────────────────
+
+export type PayoutCycleStatus = 'PendingReview' | 'Approved' | 'Disbursed' | 'Voided';
+export type PayoutLineStatus  = 'Pending' | 'Approved' | 'Disbursed' | 'Held';
+
+export interface ProviderPayoutLine {
+  id: number;
+  cycleId: number;
+  providerUserId: string;
+  providerName?: string;
+  providerEmail?: string;
+  providerRole: string;
+  amountCents: number;
+  status: PayoutLineStatus;
+  bookingId?: number;
+  invoiceId?: number;
+  description?: string;
+  notes?: string;
+}
+
+export interface PayoutCycle {
+  id: number;
+  periodStart: string;
+  periodEnd: string;
+  status: PayoutCycleStatus;
+  totalProviderAmountCents: number;
+  totalPlatformAmountCents: number;
+  totalInvoiceAmountCents: number;
+  approvedByEmail?: string;
+  approvedAt?: string;
+  disbursedAt?: string;
+  createdAt: string;
+  lines?: ProviderPayoutLine[];
 }
 
 // ─── Agent ────────────────────────────────────────────────────────────────────

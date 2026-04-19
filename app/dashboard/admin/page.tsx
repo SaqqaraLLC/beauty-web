@@ -117,9 +117,16 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto space-y-10">
           
           {/* Header */}
-          <div className="rounded-3xl border border-saqqara-border bg-saqqara-card/80 p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
-            <h1 className="text-xl font-cinzel mb-1">Admin Dashboard</h1>
-            <p className="text-saqqara-light/60 text-sm">Manage broadcasts, users, and platform operations</p>
+          <div className="rounded-3xl border border-saqqara-border bg-saqqara-card/80 p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] flex items-start justify-between">
+            <div>
+              <h1 className="text-xl font-cinzel mb-1">Admin Dashboard</h1>
+              <p className="text-saqqara-light/60 text-sm">Manage broadcasts, users, and platform operations</p>
+            </div>
+            <a href="/dashboard/admin/payouts"
+              className="btn btn-primary text-xs"
+              style={{ whiteSpace: 'nowrap' }}>
+              💰 Payouts
+            </a>
           </div>
 
           {/* Error Message */}

@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
-import { apiGet, apiPost } from '@/lib/api';
-import type { CompanyBooking, CompanyProfile } from '@/lib/types';
+import { apiGet } from '@/lib/api';
+import type { CompanyBooking, CompanyInvoice, CompanyProfile } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 
-type Tab = 'overview' | 'bookings' | 'history' | 'profile';
+type Tab = 'overview' | 'bookings' | 'history' | 'invoices' | 'profile';
 
 const STATUS_BADGE: Record<string, { label: string; color: string }> = {
   Draft:             { label: 'Draft',              color: 'rgba(255,255,255,0.08)' },
@@ -23,6 +23,7 @@ export default function CompanyDashboard() {
   const { user, isLoading: userLoading } = useCurrentUser();
   const [tab,      setTab]      = useState<Tab>('overview');
   const [bookings, setBookings] = useState<CompanyBooking[]>([]);
+  const [invoices, setInvoices] = useState<CompanyInvoice[]>([]);
   const [profile,  setProfile]  = useState<CompanyProfile | null>(null);
   const [loading,  setLoading]  = useState(true);
 
@@ -31,6 +32,7 @@ export default function CompanyDashboard() {
       Promise.all([
         apiGet('/api/company-bookings').then(setBookings).catch(() => setBookings([])),
         apiGet(`/api/companies/${user.companyId}`).then(setProfile).catch(() => {}),
+        apiGet('/api/invoices').then(setInvoices).catch(() => setInvoices([])),
       ]).finally(() => setLoading(false));
     }
   }, [user, userLoading]);
@@ -70,7 +72,7 @@ export default function CompanyDashboard() {
 
           {/* Tabs */}
           <div className="flex justify-center gap-1" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)', paddingBottom: '0' }}>
-            {(['overview', 'bookings', 'history', 'profile'] as Tab[]).map(t => (
+            {(['overview', 'bookings', 'history', 'invoices', 'profile'] as Tab[]).map(t => (
               <button key={t} onClick={() => setTab(t)}
                 className="px-5 py-3 font-cinzel text-xs tracking-[0.1em] uppercase transition-all duration-200 capitalize"
                 style={{
@@ -141,6 +143,20 @@ export default function CompanyDashboard() {
             </div>
           )}
 
+          {/* ── Invoices ── */}
+          {tab === 'invoices' && (
+            <div className="space-y-4">
+              <h2 className="text-sm font-cinzel tracking-[0.1em]">Invoices</h2>
+              {invoices.length === 0 ? (
+                <div className="card text-center py-12">
+                  <p className="text-saqqara-light/30 text-xs">No invoices yet</p>
+                </div>
+              ) : (
+                invoices.map(inv => <InvoiceCard key={inv.id} invoice={inv} />)
+              )}
+            </div>
+          )}
+
           {/* ── Profile ── */}
           {tab === 'profile' && profile && (
             <div className="card max-w-xl mx-auto space-y-4">
@@ -168,6 +184,56 @@ export default function CompanyDashboard() {
         </div>
       </div>
     </>
+  );
+}
+
+const INVOICE_BADGE: Record<string, { label: string; color: string }> = {
+  Draft:   { label: 'Draft',   color: 'rgba(255,255,255,0.08)' },
+  Sent:    { label: 'Sent',    color: 'rgba(59,130,246,0.2)'   },
+  Paid:    { label: 'Paid',    color: 'rgba(16,185,129,0.2)'   },
+  Overdue: { label: 'Overdue', color: 'rgba(239,68,68,0.2)'    },
+  Void:    { label: 'Void',    color: 'rgba(255,255,255,0.05)' },
+};
+
+function InvoiceCard({ invoice }: { invoice: CompanyInvoice }) {
+  const badge = INVOICE_BADGE[invoice.status] ?? { label: invoice.status, color: 'rgba(255,255,255,0.06)' };
+  const canPay = invoice.status === 'Sent' || invoice.status === 'Overdue';
+
+  return (
+    <div className="card">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-cinzel text-xs tracking-[0.08em] text-saqqara-light">
+              {invoice.invoiceNumber}
+            </span>
+            <span className="px-2 py-0.5 rounded-full text-xs font-cinzel tracking-[0.06em]"
+              style={{ background: badge.color, color: '#EDEDED', border: '0.5px solid rgba(255,255,255,0.06)' }}>
+              {badge.label}
+            </span>
+          </div>
+          <p className="text-saqqara-light/35 text-xs">
+            Issued {new Date(invoice.issuedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            {' · '}Due {new Date(invoice.dueAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          </p>
+          <p className="text-saqqara-gold text-sm font-cinzel mt-1">
+            ${(invoice.totalCents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </p>
+        </div>
+        {canPay ? (
+          <Link
+            href={`/dashboard/company/invoices/${invoice.id}/pay`}
+            className="btn btn-primary flex-shrink-0"
+          >
+            Pay Now
+          </Link>
+        ) : (
+          <span className="text-xs font-cinzel text-saqqara-light/30 self-center">
+            {invoice.status === 'Paid' ? 'Paid' : '—'}
+          </span>
+        )}
+      </div>
+    </div>
   );
 }
 
