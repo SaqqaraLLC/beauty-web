@@ -122,11 +122,18 @@ export default function AdminDashboard() {
               <h1 className="text-xl font-cinzel mb-1">Admin Dashboard</h1>
               <p className="text-saqqara-light/60 text-sm">Manage broadcasts, users, and platform operations</p>
             </div>
-            <a href="/dashboard/admin/payouts"
-              className="btn btn-primary text-xs"
-              style={{ whiteSpace: 'nowrap' }}>
-              💰 Payouts
-            </a>
+            <div className="flex gap-2">
+              <a href="/dashboard/admin/payouts"
+                className="btn btn-primary text-xs"
+                style={{ whiteSpace: 'nowrap' }}>
+                💰 Payouts
+              </a>
+              <a href="/dashboard/admin/payments"
+                className="btn btn-ghost text-xs"
+                style={{ whiteSpace: 'nowrap' }}>
+                Payments
+              </a>
+            </div>
           </div>
 
           {/* Error Message */}
