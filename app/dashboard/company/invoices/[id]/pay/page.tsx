@@ -7,11 +7,19 @@ import { apiGet, apiPost } from '@/lib/api';
 import type { CompanyInvoice } from '@/lib/types';
 import Navbar from '@/components/Navbar';
 
-type CardField = 'cardNumber' | 'cardExpiry' | 'cardCvc' | 'cardholderName' | 'email';
-type FormState = Record<CardField, string>;
+type FormState = {
+  cardholderName: string;
+  email: string;
+  phone: string;
+  cardNumber: string;
+  cardExpiry: string;
+  cardCvc: string;
+  streetAddress: string;
+  zipCode: string;
+};
 
 function formatCardNumber(v: string) {
-  return v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+  return v.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 ').trim();
 }
 
 function formatExpiry(v: string) {
@@ -19,22 +27,33 @@ function formatExpiry(v: string) {
   return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
 }
 
+function detectBrand(cardNumber: string): string {
+  if (/^4/.test(cardNumber)) return 'Visa';
+  if (/^5[1-5]/.test(cardNumber)) return 'Mastercard';
+  if (/^3[47]/.test(cardNumber)) return 'Amex';
+  if (/^6(?:011|5)/.test(cardNumber)) return 'Discover';
+  return 'Unknown';
+}
+
 export default function PayInvoicePage() {
   const { id }   = useParams<{ id: string }>();
   const router   = useRouter();
 
-  const [invoice,  setInvoice]  = useState<CompanyInvoice | null>(null);
-  const [loading,  setLoading]  = useState(true);
-  const [submitting, setSub]    = useState(false);
-  const [error,    setError]    = useState<string | null>(null);
-  const [success,  setSuccess]  = useState(false);
+  const [invoice,    setInvoice]  = useState<CompanyInvoice | null>(null);
+  const [loading,    setLoading]  = useState(true);
+  const [submitting, setSub]      = useState(false);
+  const [error,      setError]    = useState<string | null>(null);
+  const [success,    setSuccess]  = useState(false);
 
   const [form, setForm] = useState<FormState>({
+    cardholderName: '',
+    email:          '',
+    phone:          '',
     cardNumber:     '',
     cardExpiry:     '',
     cardCvc:        '',
-    cardholderName: '',
-    email:          '',
+    streetAddress:  '',
+    zipCode:        '',
   });
 
   useEffect(() => {
@@ -44,7 +63,7 @@ export default function PayInvoicePage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  function handleChange(field: CardField, raw: string) {
+  function handleChange(field: keyof FormState, raw: string) {
     let value = raw;
     if (field === 'cardNumber') value = formatCardNumber(raw);
     if (field === 'cardExpiry') value = formatExpiry(raw);
@@ -60,15 +79,32 @@ export default function PayInvoicePage() {
 
     try {
       const rawNumber = form.cardNumber.replace(/\s/g, '');
-      const brand = detectBrand(rawNumber);
+      const brand     = detectBrand(rawNumber);
 
-      await apiPost(`/api/invoices/${id}/pay`, {
-        email:          form.email,
-        cardNumber:     rawNumber,
-        cardExpiry:     form.cardExpiry,
-        cardCvc:        form.cardCvc,
-        cardholderName: form.cardholderName,
-        cardBrand:      brand,
+      // Parse MM/YY → separate month (int) and 4-digit year (int)
+      const [mm, yy]        = form.cardExpiry.split('/');
+      const expirationMonth = parseInt(mm, 10);
+      const expirationYear  = 2000 + parseInt(yy ?? '0', 10);
+
+      if (!expirationMonth || expirationMonth < 1 || expirationMonth > 12) {
+        setError('Invalid expiry month.');
+        return;
+      }
+
+      await apiPost('/api/payments/charge', {
+        bookingId:       invoice.companyBookingId ?? null,
+        payerEmail:      form.email,
+        payerName:       form.cardholderName,
+        payerPhone:      form.phone || null,
+        nameOnCard:      form.cardholderName,
+        cardNumber:      rawNumber,
+        expirationMonth: expirationMonth,
+        expirationYear:  expirationYear,
+        streetAddress:   form.streetAddress || null,
+        zipCode:         form.zipCode || null,
+        cardBrand:       brand,
+        amountCents:     invoice.totalCents,
+        description:     `Invoice ${invoice.invoiceNumber}`,
       });
 
       setSuccess(true);
@@ -129,7 +165,6 @@ export default function PayInvoicePage() {
       <div className="min-h-screen bg-saqqara-dark px-4 py-10">
         <div className="max-w-md mx-auto space-y-6">
 
-          {/* Back */}
           <Link href="/dashboard/company" className="text-xs font-cinzel text-saqqara-light/35 hover:text-saqqara-gold transition-colors">
             ← Back to Dashboard
           </Link>
@@ -169,7 +204,7 @@ export default function PayInvoicePage() {
               />
             </div>
 
-            {/* Email */}
+            {/* Billing Email */}
             <div>
               <label className="block text-xs font-cinzel tracking-[0.08em] text-saqqara-light/40 mb-1.5">
                 Billing Email
@@ -232,6 +267,29 @@ export default function PayInvoicePage() {
               </div>
             </div>
 
+            {/* Billing Address (optional) */}
+            <div className="pt-2" style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>
+              <h3 className="font-cinzel text-xs tracking-[0.1em] text-saqqara-light/40 uppercase mb-3">
+                Billing Address <span className="text-saqqara-light/20 normal-case">(optional)</span>
+              </h3>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Street address"
+                  value={form.streetAddress}
+                  onChange={e => handleChange('streetAddress', e.target.value)}
+                  className="input w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="ZIP code"
+                  value={form.zipCode}
+                  onChange={e => handleChange('zipCode', e.target.value)}
+                  className="input w-full"
+                />
+              </div>
+            </div>
+
             {error && (
               <p className="text-red-400 text-xs font-cinzel py-2 px-3 rounded"
                 style={{ background: 'rgba(239,68,68,0.08)', border: '0.5px solid rgba(239,68,68,0.2)' }}>
@@ -249,7 +307,7 @@ export default function PayInvoicePage() {
             </button>
 
             <p className="text-center text-xs text-saqqara-light/20 font-cinzel tracking-[0.06em]">
-              Secured by Worldpay
+              Secured by Authvia · Powered by Worldpay
             </p>
           </form>
 
@@ -257,12 +315,4 @@ export default function PayInvoicePage() {
       </div>
     </>
   );
-}
-
-function detectBrand(cardNumber: string): string {
-  if (/^4/.test(cardNumber)) return 'Visa';
-  if (/^5[1-5]/.test(cardNumber)) return 'Mastercard';
-  if (/^3[47]/.test(cardNumber)) return 'Amex';
-  if (/^6(?:011|5)/.test(cardNumber)) return 'Discover';
-  return 'Unknown';
 }
